@@ -1,321 +1,301 @@
--- Inserir dados na tabela Categoria
-INSERT INTO Categoria  VALUES 
-(1, 'Hortifruti'),
-(2, 'Mercearia'),
+BEGIN;
+
+-- Categorias
+INSERT INTO CATEGORIA (IDCat, NomeCat, IDCatPai) VALUES
+(1, 'Hortifruti', NULL),
+(2, 'Mercearia', NULL),
 (3, 'Legumes', 1),
 (4, 'Frutas', 1),
 (5, 'Bebidas', 2),
 (6, 'Verduras', 1),
 (7, 'Limpeza', 2),
 (8, 'Temperos', 2),
-(9, 'Alimentação', 2);
+(9, 'Alimentacao', 2);
 
--- Inserir dados na tabela Produto
-INSERT INTO Produto VALUES 
-(IDProd, 'Cebolinha','Erva aromática de sabor suave, utilizada para finalização de pratos.',5.00, 8.00, 'Un', IDCat),
-(IDProd, 'Tomate','Vermelhinho e saudavel.',11.99, 80.00, 'Kg', IDCat),
-(IDProd, 'açucar','Branco e doce, utilizado para adoçar alimentos e bebidas.', 5.49, 15.00, 'Un', IDCat),
-(IDProd, 'batata','Tubérculo versátil, utilizado em diversas receitas culinárias.',5.99, 60.00, 'Kg', IDCat),
-(IDProd, 'cebola','Vegetal de sabor forte, utilizado como base para muitos pratos.',4.99, 60.00, 'Kg', IDCat),
-(IDProd, 'couve manteiga','Folha verde escura, utilizada em saladas e refogados.',8.00, 7.00, 'Maço', IDCat),
-(IDProd, 'rucula','Folha verde com sabor picante, utilizada em saladas e pratos gourmet.',8.00, 7.00, 'Maço', IDCat),
-(IDProd, 'alho','Bulbo aromático, utilizado para temperar e dar sabor a diversos pratos.',36.99, 25.00, 'Kg', IDCat),
-(IDProd, 'leite','Bebida nutritiva, utilizada para consumo direto e em receitas culinárias.',3.69, 36.00, 'Un', IDCat),
-(IDProd, 'beterraba','Raiz de cor vermelha intensa, utilizada em saladas e sucos.',5.99, 20.00, 'Kg', IDCat);
-(IDProd, 'cenoura','Raiz de cor laranja, utilizada em saladas, sopas e sucos.',6.49, 15.00, 'Kg', IDCat);
-(IDProd, 'inhame','Tubérculo de sabor suave, utilizado em diversas receitas culinárias.',14.49, 10.00, 'Kg', IDCat);
-(IDProd, 'laranja pera','Fruta cítrica de sabor doce e suculento, utilizada para consumo direto e em sucos.',3.99, 120.00, 'Kg', IDCat);
-(IDProd, 'melancia','Fruta grande e refrescante, com polpa vermelha e sementes pretas, utilizada para consumo direto e em sucos.',3.79, 300.00, 'Kg', IDCat);
-(IDProd, 'feijão carioquinha','Leguminosa de sabor suave, utilizada em pratos tradicionais da culinária brasileira.',5.99, 15.00, 'Un', IDCat);
-(IDProd, 'sal','Condimento essencial, utilizado para realçar o sabor dos alimentos.',2.99, 20.00, 'Un', IDCat);
-(IDProd, 'oleo de soja','Óleo vegetal versátil, utilizado para cozinhar e fritar alimentos.',9.99, 36.00, 'Un', IDCat);
-(IDProd, 'polpa de frutas','Produto processado a partir de frutas, utilizado para sucos, smoothies e sobremesas.',10.00, 140.00, 'Un', IDCat);
-(IDProd, 'mandioquinha','Tubérculo de sabor adocicado, utilizado em diversas receitas culinárias.',9.99, 12.00, 'Kg', IDCat);
-(IDProd, 'milho verde','Grão de milho fresco, utilizado em saladas, sopas e pratos diversos.',8.00, 35.00, 'Un', IDCat);
-(IDProd, 'mandioca','Tubérculo de sabor neutro, utilizado em diversas receitas culinárias, como farinhas e tapiocas.',10.00, 48.00, 'Un', IDCat);
-(IDProd, 'pimentão verde','Vegetal de sabor suave, utilizado em saladas, refogados e pratos diversos.',16.99, 6.00, 'Kg', IDCat);
-(IDProd, 'pimentão vermelho','Vegetal de sabor suave, utilizado em saladas, refogados e pratos diversos.',24.99, 3.00, 'Kg', IDCat);
-(IDProd, 'pimentão amarelo','Vegetal de sabor suave, utilizado em saladas, refogados e pratos diversos.',24.99, 3.00, 'Kg', IDCat);
-(IDProd, 'arroz branco','Cereal básico, utilizado como acompanhamento em diversas refeições.',26.59, 14.00, 'Un', IDCat);
-(IDProd, 'coca-cola','Bebida carbonatada de sabor doce e refrescante, utilizada para consumo direto e em coquetéis.',11.99, 18.00, 'Un', IDCat);
-(IDProd, 'suco de laranja','Bebida feita a partir do suco de laranjas frescas, utilizada para consumo direto e em coquetéis.',12.00, 8.00, 'Un', IDCat);
-(IDProd, 'ovos','Alimento versátil, utilizado em diversas receitas culinárias, como bolos, omeletes e pratos principais.',18.00, 24.00, 'Un', IDCat);
+-- Unidades de medida
+INSERT INTO UNIDADEMEDIDA (IDUnidade, NomeUnidade, SiglaUnidade) VALUES
+(1, 'Quilograma', 'kg'),
+(2, 'Unidade', 'un'),
+(3, 'Maco', 'mc'),
+(4, 'Bandeja', 'bdj'),
+(5, 'Duzia', 'dz');
 
--- Inserir dados na tabela Cliente
-INSERT INTO Cliente VALUES
-(IDCliente, 'Usuario', '24/11/2022',000.000.000-00),
-(IDCliente, 'Samyra Mara Candido Silva', '08/10/2005', 145.236.789-01),
-(IDCliente, 'Lucas Batista Perreira', '28/01/2006', 258.963.147-22),
-(IDCliente, 'João Gabriel Carneiro Calbo', '09/07/2005', 369.852.147-33),
-(IDCliente, 'Jean Domiguet', '26/07/2004', 456.789.123-44),
-(IDCliente, 'Eliane Moreira', '15/03/2006', 568.124.963-55),
-(IDCliente, 'Leonardo Verrisimo', '09/12/2005', 5654.321.987-66),
-(IDCliente, 'Júlio César Chaves', '02/07/1986', 789.123.456-77),
-(IDCliente, 'Mariana Kelly Lopes', '31/03/2006', 852.741.963-88),
-(IDCliente, 'Geraldo Lima', '12/05/1942', 963.258.741-99),
-(IDCliente, 'Benedito Sebastião Ferreira', '15/01/1951', 102.304.506-10),
-(IDCliente, 'Claudio Neves', '11/11/1949', 203.405.607-21),
-(IDCliente, 'Samuel Uchôa', '06/03/1955', 304.506.708-32);
+-- Fornecedores
+INSERT INTO FORNECEDOR (IDForn, NomeForn, CNPJForn) VALUES
+(1, 'CEASA - CEAGESP Sao Jose Rio Preto', '43123456000112'),
+(2, 'Coca-Cola FEMSA Brasil', '55987654000199'),
+(3, 'Roca do Eduardinho', '12345678000100'),
+(4, 'Sitio Santo Antonio', '98765432000111'),
+(5, 'Sitio do Vovo Kaka', '11222333000144'),
+(6, 'Fazenda Vale Verde', '44555666000177'),
+(7, 'Cooperativa Agricola Regional', '77888999000122'),
+(8, 'Hortalicas Dona Maria', '33444555000188'),
+(9, 'Hortifruti da Familia Producoes', '66777888000133'),
+(10, 'Seu Jair das Aguas Termais', '99000111000155');
 
-INSERT INTO VENDEDOR VALUES
-(IDGEN, 'Mariane Pereira', '40183561880', '2008-03-04', '17991112222', 1500),
-(IDGEN, 'Maria José Batista Pereira', '57862209826', '1988-07-02', '17992223333', 1500),
-(IDGEN, 'Agnaldo Pereira', '18295937812', '1987-05-09', '17993334444', 1500),
-(IDGEN, 'Debora Rodrigues', '30427744814', '2000-08-29', '179944455551', 1500),
-(IDGEN, 'Eduarda Costa', '35431346806', '2006-12-07', '17995556666', 1500),
-(IDGEN, 'Carla Silva', '21134998973', '2004-11-09', '17996667777', 1500);
+-- Clientes
+INSERT INTO CLIENTE (IDCliente, NomeCliente, DataNascCliente, CPFCliente) VALUES
+(1, 'Usuario', '2022-11-24', '00000000000'),
+(2, 'Samyra Mara Candido Silva', '2005-10-08', '14523678901'),
+(3, 'Lucas Batista Pereira', '2006-01-28', '25896314722'),
+(4, 'Joao Gabriel Carneiro Calbo', '2005-07-09', '36985214733'),
+(5, 'Jean Domiguet', '2004-07-26', '45678912344'),
+(6, 'Eliane Moreira', '2006-03-15', '56812496355'),
+(7, 'Leonardo Verissimo', '2005-12-09', '65432198766'),
+(8, 'Julio Cesar Chaves', '1986-07-02', '78912345677'),
+(9, 'Mariana Kelly Lopes', '2006-03-31', '85274196388'),
+(10, 'Geraldo Lima', '1942-05-12', '96325874199'),
+(11, 'Benedito Sebastiao Ferreira', '1951-01-15', '10230450610'),
+(12, 'Claudio Neves', '1949-11-11', '20340560721'),
+(13, 'Samuel Uchoa', '1955-03-06', '30450670832');
 
-INSERT INTO CAIXA VALUES
+-- Vendedores
+INSERT INTO VENDEDOR (IDVend, NomeVend, CPFVend, DataNascVend, CelVend, SalarioVend) VALUES
+(1, 'Mariane Pereira', '40183561880', '2008-03-04', '17991112222', 1500.00),
+(2, 'Maria Jose Batista Pereira', '57862209826', '1988-07-02', '17992223333', 1500.00),
+(3, 'Agnaldo Pereira', '18295937812', '1987-05-09', '17993334444', 1500.00),
+(4, 'Debora Rodrigues', '30427744814', '2000-08-29', '17994445551', 1500.00),
+(5, 'Eduarda Costa', '35431346806', '2006-12-07', '17995556666', 1500.00),
+(6, 'Carla Silva', '21134998973', '2004-11-09', '17996667777', 1500.00);
+
+-- Caixas
+INSERT INTO CAIXA (IDCaixa, TipoCaixa) VALUES
 (1, 'Normal'),
 (2, 'Normal'),
 (3, 'Rapido'),
 (4, 'Rapido'),
 (5, 'Preferencial');
 
-INSERT INTO ENDERECOCLIENTE VALUES 
-('E001', 'U000'),
-('E002', 'U001'),
-('E003', 'U001'),
-('E004', 'U002'),
-('E005', 'U002'),
-('E006', 'U003'),
-('E007', 'U003'),
-('E008', 'U004'),
-('E009', 'U004'),
-('E010', 'U005'),
-('E011', 'U005'),
-('E012', 'U006'),
-('E013', 'U006'),
-('E014', 'U007'),
-('E015', 'U007'),
-('E016', 'U008'),
-('E017', 'U008'),
-('E018', 'U009'),
-('E019', 'U009'),
-('E020', 'U010'),
-('E021', 'U010'),
-('E022', 'U011'),
-('E023', 'U011'),
-('E024', 'U012'),
-('E025', 'U012');
+-- Produtos
+INSERT INTO PRODUTO (IDProd, NomeProd, DescricaoProd, PrecoVendaProd, EstoqueAtualProd, PrecoCustoProd, IDUnidade, IDCat) VALUES
+(1, 'Cebolinha', 'Erva aromatica de sabor suave, usada para finalizar pratos.', 5.00, 8.000, 2.50, 3, 8),
+(2, 'Tomate', 'Produto fresco para saladas, molhos e preparos diversos.', 11.99, 80.000, 7.00, 1, 3),
+(3, 'Acucar', 'Produto usado para adocar alimentos e bebidas.', 5.49, 15.000, 3.20, 2, 9),
+(4, 'Batata', 'Tuberculo versatil para diversas receitas.', 5.99, 60.000, 3.50, 1, 3),
+(5, 'Cebola', 'Vegetal usado como base de temperos e preparos.', 4.99, 60.000, 2.80, 1, 3),
+(6, 'Couve manteiga', 'Folha verde escura para saladas e refogados.', 8.00, 7.000, 4.00, 3, 6),
+(7, 'Rucula', 'Folha de sabor picante usada em saladas.', 8.00, 7.000, 4.00, 3, 6),
+(8, 'Alho', 'Bulbo aromatico usado para temperar pratos.', 36.99, 25.000, 22.00, 1, 8),
+(9, 'Leite', 'Bebida nutritiva para consumo e receitas.', 3.69, 36.000, 2.30, 2, 5),
+(10, 'Beterraba', 'Raiz vermelha usada em saladas e sucos.', 5.99, 20.000, 3.00, 1, 3),
+(11, 'Cenoura', 'Raiz laranja usada em saladas, sopas e sucos.', 6.49, 15.000, 3.50, 1, 3),
+(12, 'Inhame', 'Tuberculo de sabor suave para receitas diversas.', 14.49, 10.000, 8.00, 1, 3),
+(13, 'Laranja pera', 'Fruta citrica para consumo direto e sucos.', 3.99, 120.000, 2.00, 1, 4),
+(14, 'Melancia', 'Fruta grande e refrescante de polpa vermelha.', 3.79, 300.000, 1.90, 1, 4),
+(15, 'Feijao carioquinha', 'Leguminosa usada em pratos tradicionais.', 5.99, 15.000, 3.50, 2, 9),
+(16, 'Sal', 'Condimento essencial para realcar sabores.', 2.99, 20.000, 1.20, 2, 8),
+(17, 'Oleo de soja', 'Oleo vegetal usado para cozinhar e fritar.', 9.99, 36.000, 6.50, 2, 9),
+(18, 'Polpa de frutas', 'Produto processado para sucos e sobremesas.', 10.00, 140.000, 5.50, 2, 5),
+(19, 'Mandioquinha', 'Tuberculo de sabor adocicado para receitas.', 9.99, 12.000, 5.50, 1, 3),
+(20, 'Milho verde', 'Grao fresco para saladas, sopas e pratos diversos.', 8.00, 35.000, 4.30, 2, 3),
+(21, 'Mandioca', 'Tuberculo usado em receitas, farinhas e tapiocas.', 10.00, 48.000, 5.00, 1, 3),
+(22, 'Pimentao verde', 'Vegetal usado em saladas, refogados e preparos.', 16.99, 6.000, 9.00, 1, 3),
+(23, 'Pimentao vermelho', 'Vegetal colorido para saladas e refogados.', 24.99, 3.000, 14.00, 1, 3),
+(24, 'Pimentao amarelo', 'Vegetal colorido para saladas e refogados.', 24.99, 3.000, 14.00, 1, 3),
+(25, 'Arroz branco', 'Cereal basico para acompanhar refeicoes.', 26.59, 14.000, 18.00, 2, 9),
+(26, 'Coca-cola', 'Bebida carbonatada para consumo direto.', 11.99, 18.000, 7.00, 2, 5),
+(27, 'Suco de laranja', 'Bebida de laranja pronta para consumo.', 12.00, 8.000, 6.00, 2, 5),
+(28, 'Ovos', 'Alimento versatil para receitas e pratos principais.', 18.00, 24.000, 11.00, 5, 9);
 
-INSERT INTO CLIENTE_CELCLIENTE VALUES 
-('(17) 99999-0000', 'U000'),
-('(17) 98123-4567', 'U001'),
-('(17) 3462-1111', 'U001'),
-('(17) 99182-7364', 'U002'),
-('(17) 99765-4321', 'U003'),
-('(17) 98888-5555', 'U004'),
-('(11) 97777-6666', 'U004'),
-('(17) 99234-5678', 'U005'),
-('(17) 99345-6789', 'U006'),
-('(17) 99456-7890', 'U007'),
-('(17) 3462-2222', 'U007'),
-('(17) 99567-8901', 'U008'),
-('(17) 3462-3333', 'U009'),
-('(17) 99678-9012', 'U010'),
-('(17) 3462-4444', 'U010'),
-('(17) 99789-0123', 'U011'),
-('(17) 99890-1234', 'U012');
+-- Enderecos
+INSERT INTO ENDERECO (IDEndereco, RuaEnd, NumeroEnd, ComplemEnd, CEPEnd, BairroEnd, CidadeEnd, EstadoEnd, PaisEnd) VALUES
+(1, 'Tv. Pio XII', 10, 'Casa principal', '15603504', 'Parque Sao Bernardo', 'Fernandopolis', 'SP', 'Brasil'),
+(2, 'Tv. Pio XII', 45, 'Apto 2', '15603504', 'Parque Sao Bernardo', 'Fernandopolis', 'SP', 'Brasil'),
+(3, 'Rua Sao Paulo', 890, 'Fundos', '15600020', 'Centro', 'Fernandopolis', 'SP', 'Brasil'),
+(4, 'Rua das Orquideas', 112, 'Casa', '15603510', 'Parque Sao Bernardo', 'Fernandopolis', 'SP', 'Brasil'),
+(5, 'Rua Parana', 334, NULL, '15605020', 'Jardim Paulista', 'Fernandopolis', 'SP', 'Brasil'),
+(6, 'Rua dos Ipes', 88, NULL, '15603515', 'Parque Sao Bernardo', 'Fernandopolis', 'SP', 'Brasil'),
+(7, 'Av. Libero de Almeida Silvares', 2050, 'Loja 3', '15606000', 'Coester', 'Fernandopolis', 'SP', 'Brasil'),
+(8, 'Tv. Santa Rita', 12, 'Casa 1', '15603520', 'Parque Sao Bernardo', 'Fernandopolis', 'SP', 'Brasil'),
+(9, 'Rua Rio de Janeiro', 455, NULL, '15608050', 'Brasilandia', 'Fernandopolis', 'SP', 'Brasil'),
+(10, 'Rua Margarida', 300, 'Bloco B Apto 101', '15603530', 'Parque Sao Bernardo', 'Fernandopolis', 'SP', 'Brasil'),
+(11, 'Rua Minas Gerais', 760, 'Comercial', '15600045', 'Centro', 'Fernandopolis', 'SP', 'Brasil'),
+(12, 'Tv. Pio XII', 110, 'Casa 2', '15603504', 'Parque Sao Bernardo', 'Fernandopolis', 'SP', 'Brasil'),
+(13, 'Rua Espirito Santo', 99, NULL, '15608080', 'Brasilandia', 'Fernandopolis', 'SP', 'Brasil'),
+(14, 'Rua das Camelias', 55, NULL, '15603540', 'Parque Sao Bernardo', 'Fernandopolis', 'SP', 'Brasil'),
+(15, 'Rua Pernambuco', 812, NULL, '15610010', 'Universitario', 'Fernandopolis', 'SP', 'Brasil'),
+(16, 'Tv. Joao de Barro', 25, 'Sobrado', '15603550', 'Parque Sao Bernardo', 'Fernandopolis', 'SP', 'Brasil'),
+(17, 'Rua Bahia', 1005, 'Sala 2', '15600060', 'Centro', 'Fernandopolis', 'SP', 'Brasil'),
+(18, 'Tv. Pio XII', 18, NULL, '15603504', 'Parque Sao Bernardo', 'Fernandopolis', 'SP', 'Brasil'),
+(19, 'Rua Ceara', 210, 'Edicula', '15607005', 'Santa Helena', 'Fernandopolis', 'SP', 'Brasil'),
+(20, 'Rua das Acacias', 400, NULL, '15603560', 'Parque Sao Bernardo', 'Fernandopolis', 'SP', 'Brasil'),
+(21, 'Av. Afonso Pena', 670, 'Galpao', '15600080', 'Centro', 'Fernandopolis', 'SP', 'Brasil'),
+(22, 'Tv. Canarios', 15, 'Casa B', '15603570', 'Parque Sao Bernardo', 'Fernandopolis', 'SP', 'Brasil'),
+(23, 'Rua Goias', 320, NULL, '15612000', 'Por do Sol', 'Fernandopolis', 'SP', 'Brasil'),
+(24, 'Rua das Rosas', 180, NULL, '15603580', 'Parque Sao Bernardo', 'Fernandopolis', 'SP', 'Brasil'),
+(25, 'Av. Expedicionarios Brasileiros', 1500, 'Casa', '15600001', 'Centro', 'Fernandopolis', 'SP', 'Brasil'),
+(26, 'Av. Joao Batista Vetorasso', 1600, 'Box 45 Central', '15035470', 'Distrito Industrial', 'Sao Jose do Rio Preto', 'SP', 'Brasil'),
+(27, 'Rodovia Washington Luis', 432, 'Km 432 Galpao', '15025999', 'Zona Rural', 'Sao Jose do Rio Preto', 'SP', 'Brasil'),
+(28, 'Av. Bady Bassitt', 3800, 'Escritorio', '15025000', 'Boa Vista', 'Sao Jose do Rio Preto', 'SP', 'Brasil'),
+(29, 'Av. Expedicionarios Brasileiros', 2150, 'Distribuicao', '15600002', 'Centro', 'Fernandopolis', 'SP', 'Brasil'),
+(30, 'Rua Sao Paulo', 1020, 'Box Mercado', '15600020', 'Centro', 'Fernandopolis', 'SP', 'Brasil'),
+(31, 'Rua Rio de Janeiro', 150, 'Processamento', '15608050', 'Brasilandia', 'Fernandopolis', 'SP', 'Brasil'),
+(32, 'Rua Minas Gerais', 980, 'Entrega urbana', '15600045', 'Centro', 'Fernandopolis', 'SP', 'Brasil'),
+(33, 'Av. Libero de Almeida Silvares', 1800, 'Organicos', '15606000', 'Coester', 'Fernandopolis', 'SP', 'Brasil'),
+(34, 'Rodovia Pericles Belini', 0, 'Km 122 Armazem', '15500000', 'Zona Rural', 'Votuporanga', 'SP', 'Brasil'),
+(35, 'Rua Parana', 455, 'Horta comunitaria', '15605020', 'Jardim Paulista', 'Fernandopolis', 'SP', 'Brasil'),
+(36, 'Av. Francisco Jalles', 2200, 'Filial regional', '15700000', 'Centro', 'Jales', 'SP', 'Brasil'),
+(37, 'Av. Afonso Pena', 105, 'Escritorio vendas', '15600080', 'Centro', 'Fernandopolis', 'SP', 'Brasil'),
+(38, 'Estrada Municipal FND-150', 0, 'Km 4 Porteira Azul', '15614899', 'Zona Rural', 'Fernandopolis', 'SP', 'Brasil'),
+(39, 'Estrada de Terra Seca', 12, 'Sitio Santo Antonio', '15615000', 'Corrego do Jagora', 'Fernandopolis', 'SP', 'Brasil'),
+(40, 'Rodovia Euclides da Cunha', 552, 'Entrada de terra', '15614000', 'Zona Rural', 'Fernandopolis', 'SP', 'Brasil'),
+(41, 'Estrada Municipal dos Coqueiros', 0, 'Fazenda Vale Verde', '15614500', 'Zona Rural', 'Fernandopolis', 'SP', 'Brasil'),
+(42, 'Av. dos Arnaldos', 1500, 'Armazem 2', '15607100', 'Parque Universitario', 'Fernandopolis', 'SP', 'Brasil'),
+(43, 'Chacara das Flores', 5, 'Lote 2', '15613200', 'Perimetro Urbano', 'Fernandopolis', 'SP', 'Brasil'),
+(44, 'Rua Amazonas', 850, 'Galpao', '15600030', 'Centro', 'Fernandopolis', 'SP', 'Brasil'),
+(45, 'Rodovia Joao Carlos Alves Borges', 0, 'Balneario', '15613899', 'Aguas Quentes', 'Fernandopolis', 'SP', 'Brasil'),
+(46, 'Rua Amazonas', 125, 'Casa', '15600030', 'Centro', 'Fernandopolis', 'SP', 'Brasil'),
+(47, 'Av. dos Arnaldos', 450, 'Apto 34', '15607100', 'Parque Universitario', 'Fernandopolis', 'SP', 'Brasil'),
+(48, 'Rua Sao Paulo', 815, 'Fundos', '15600020', 'Centro', 'Fernandopolis', 'SP', 'Brasil'),
+(49, 'Rua Rio de Janeiro', 321, 'Casa 2', '15608050', 'Brasilandia', 'Fernandopolis', 'SP', 'Brasil'),
+(50, 'Rua Parana', 654, NULL, '15605020', 'Jardim Paulista', 'Fernandopolis', 'SP', 'Brasil'),
+(51, 'Tv. Pio XII', 77, 'Edicula', '15603504', 'Parque Sao Bernardo', 'Fernandopolis', 'SP', 'Brasil');
 
-INSERT INTO OPERACAOCAIXA VALUES 
-('001', '2026-02-02 07:30:00', 230.00, '2026-02-02 13:20:00', 383.77, 153.77, 'V002', '001'),
-('002', '2026-02-02 11:00:00', 250.00, '2026-02-02 18:00:00', 285.97, 35.97, 'V001', '003'),
-('003', '2026-02-03 07:30:00', 230.00, '2026-02-03 01:20:00', 486.38, 256.38, 'V004', '001'),
-('004', '2026-02-03 11:00:00', 250.00, '2026-02-03 18:00:00', 444.08, 194.08, 'V003', '003'),
-('005', '2026-02-04 08:00:00', 250.00, '2026-02-04 13:00:00', 395.62, 145.62, 'V005', '002');
+-- Relacionamentos de endereco
+INSERT INTO ENDERECOCLIENTE (IDCliente, IDEndereco) VALUES
+(1, 1), (2, 2), (2, 3), (3, 4), (3, 5),
+(4, 6), (4, 7), (5, 8), (5, 9), (6, 10),
+(6, 11), (7, 12), (7, 13), (8, 14), (8, 15),
+(9, 16), (9, 17), (10, 18), (10, 19), (11, 20),
+(11, 21), (12, 22), (12, 23), (13, 24), (13, 25);
 
-INSERT INTO ENDERECOFORNEC VALUES 
-('E026', 'F001'),
-('E027', 'F002'),
-('E028', 'F001'),
-('E029', 'F002'),
-('E030', 'F003'),
-('E031', 'F004'),
-('E032', 'F005'),
-('E033', 'F006'),
-('E034', 'F007'),
-('E035', 'F008'),
-('E036', 'F009'),
-('E037', 'F010'),
-('E038', 'F003'),
-('E039', 'F004'),
-('E040', 'F005'),
-('E041', 'F006'),
-('E042', 'F007'),
-('E043', 'F008'),
-('E044', 'F009'),
-('E045', 'F010');
+INSERT INTO ENDERECOFORNEC (IDForn, IDEndereco) VALUES
+(1, 26), (2, 27), (1, 28), (2, 29), (3, 30),
+(4, 31), (5, 32), (6, 33), (7, 34), (8, 35),
+(9, 36), (10, 37), (3, 38), (4, 39), (5, 40),
+(6, 41), (7, 42), (8, 43), (9, 44), (10, 45);
 
-INSERT INTO ENDERECO VALUES 
-('E001', 'Tv. Pio XII', '10', 'Casa principal', '15603-504', 'Parque São Bernardo', 'Fernandópolis', 'SP', 'Brasil'),
-('E002', 'Tv. Pio XII', '45', 'Apto 2', '15603-504', 'Parque São Bernardo', 'Fernandópolis', 'SP', 'Brasil'),
-('E003', 'Rua São Paulo', '890', 'Fundos', '15600-020', 'Centro', 'Fernandópolis', 'SP', 'Brasil'),
-('E004', 'Rua das Orquídeas', '112', 'Casa', '15603-510', 'Parque São Bernardo', 'Fernandópolis', 'SP', 'Brasil'),
-('E005', 'Rua Paraná', '334', NULL, '15605-020', 'Jardim Paulista', 'Fernandópolis', 'SP', 'Brasil'),
-('E006', 'Rua dos Ipês', '88', NULL, '15603-515', 'Parque São Bernardo', 'Fernandópolis', 'SP', 'Brasil'),
-('E007', 'Av. Líbero de Almeida Silvares', '2050', 'Loja 3', '15606-000', 'Coester', 'Fernandópolis', 'SP', 'Brasil'),
-('E008', 'Tv. Santa Rita', '12', 'Casa 1', '15603-520', 'Parque São Bernardo', 'Fernandópolis', 'SP', 'Brasil'),
-('E009', 'Rua Rio de Janeiro', '455', NULL, '15608-050', 'Brasilândia', 'Fernandópolis', 'SP', 'Brasil'),
-('E010', 'Rua Margarida', '300', 'Bloco B, Apto 101', '15603-530', 'Parque São Bernardo', 'Fernandópolis', 'SP', 'Brasil'),
-('E011', 'Rua Minas Gerais', '760', 'Comercial', '15600-045', 'Centro', 'Fernandópolis', 'SP', 'Brasil'),
-('E012', 'Tv. Pio XII', '110', 'Casa 2', '15603-504', 'Parque São Bernardo', 'Fernandópolis', 'SP', 'Brasil'),
-('E013', 'Rua Espirito Santo', '99', NULL, '15608-080', 'Brasilândia', 'Fernandópolis', 'SP', 'Brasil'),
-('E014', 'Rua das Camélias', '55', NULL, '15603-540', 'Parque São Bernardo', 'Fernandópolis', 'SP', 'Brasil'),
-('E015', 'Rua Pernambuco', '812', NULL, '15610-010', 'Universitário', 'Fernandópolis', 'SP', 'Brasil'),
-('E016', 'Tv. João de Barro', '25', 'Sobrado', '15603-550', 'Parque São Bernardo', 'Fernandópolis', 'SP', 'Brasil'),
-('E017', 'Rua Bahia', '1005', 'Sala 2', '15600-060', 'Centro', 'Fernandópolis', 'SP', 'Brasil'),
-('E018', 'Tv. Pio XII', '18', NULL, '15603-504', 'Parque São Bernardo', 'Fernandópolis', 'SP', 'Brasil'),
-('E019', 'Rua Ceará', '210', 'Edícula', '15607-005', 'Santa Helena', 'Fernandópolis', 'SP', 'Brasil'),
-('E020', 'Rua das Acácias', '400', NULL, '15603-560', 'Parque São Bernardo', 'Fernandópolis', 'SP', 'Brasil'),
-('E021', 'Av. Afonso Pena', '670', 'Galpão', '15600-080', 'Centro', 'Fernandópolis', 'SP', 'Brasil'),
-('E022', 'Tv. Canários', '15', 'Casa B', '15603-570', 'Parque São Bernardo', 'Fernandópolis', 'SP', 'Brasil'),
-('E023', 'Rua Goiás', '320', NULL, '15612-000', 'Pôr do Sol', 'Fernandópolis', 'SP', 'Brasil'),
-('E024', 'Rua das Rosas', '180', NULL, '15603-580', 'Parque São Bernardo', 'Fernandópolis', 'SP', 'Brasil'),
-('E025', 'Av. Expedicionários Brasileiros', '1500', 'Casa', '15600-001', 'Centro', 'Fernandópolis', 'SP', 'Brasil'),
-('E026', 'Av. João Batista Vetorasso', '1600', 'Box 45 - Pavilhão Central', '15035-470', 'Distrito Industrial', 'São José do Rio Preto', 'SP', 'Brasil'),
-('E027', 'Rodovia Washington Luís', '432', 'Km 432 - Galpão Logístico', '15025-999', 'Zona Rural', 'São José do Rio Preto', 'SP', 'Brasil'),
-('E028', 'Av. Bady Bassitt', '3800', 'Escritório Administrativo', '15025-000', 'Boa Vista', 'São José do Rio Preto', 'SP', 'Brasil'),
-('E029', 'Av. Expedicionários Brasileiros', '2150', 'Centro de Distribuição', '15600-002', 'Centro', 'Fernandópolis', 'SP', 'Brasil'),
-('E030', 'Rua São Paulo', '1020', 'Box no Mercado Municipal', '15600-020', 'Centro', 'Fernandópolis', 'SP', 'Brasil'),
-('E031', 'Rua Rio de Janeiro', '150', 'Unidade de Processamento', '15608-050', 'Brasilândia', 'Fernandópolis', 'SP', 'Brasil'),
-('E032', 'Rua Minas Gerais', '980', 'Ponto de Entrega Urbana', '15600-045', 'Centro', 'Fernandópolis', 'SP', 'Brasil'),
-('E033', 'Av. Líbero de Almeida Silvares', '1800', 'Loja de Produtos Orgânicos', '15606-000', 'Coester', 'Fernandópolis', 'SP', 'Brasil'),
-('E034', 'Rodovia Péricles Belini', 'S/N', 'Km 122 - Armazém Regional', '15500-000', 'Zona Rural', 'Votuporanga', 'SP', 'Brasil'),
-('E035', 'Rua Paraná', '455', 'Horta Comunitária', '15605-020', 'Jardim Paulista', 'Fernandópolis', 'SP', 'Brasil'),
-('E036', 'Av. Francisco Jalles', '2200', 'Filial Regional', '15700-000', 'Centro', 'Jales', 'SP', 'Brasil'),
-('E037', 'Av. Afonso Pena', '105', 'Escritório de Vendas', '15600-080', 'Centro', 'Fernandópolis', 'SP', 'Brasil'),
-('E038', 'Estrada Municipal FND-150', 'S/N', 'Km 4 - Porteira Azul', '15614-899', 'Zona Rural', 'Fernandópolis', 'SP', 'Brasil'),
-('E039', 'Estrada de Terra Seca', '12', 'Sítio Santo Antônio', '15615-000', 'Córrego do Jagora', 'Fernandópolis', 'SP', 'Brasil'),
-('E040', 'Rodovia Euclides da Cunha', '552', 'Km 552 - Entrada de terra', '15614-000', 'Zona Rural', 'Fernandópolis', 'SP', 'Brasil'),
-('E041', 'Estrada Municipal dos Coqueiros', 'S/N', 'Km 8 - Fazenda Vale Verde', '15614-500', 'Zona Rural', 'Fernandópolis', 'SP', 'Brasil'),
-('E042', 'Av. dos Arnaldos', '1500', 'Armazém 2', '15607-100', 'Parque Universitário', 'Fernandópolis', 'SP', 'Brasil'),
-('E043', 'Chácara das Flores', '5', 'Lote 2', '15613-200', 'Perímetro Urbano', 'Fernandópolis', 'SP', 'Brasil'),
-('E044', 'Rua Amazonas', '850', 'Galpão de Distribuição', '15600-030', 'Centro', 'Fernandópolis', 'SP', 'Brasil'),
-('E045', 'Rodovia João Carlos Alves Borges', 'S/N', 'Em frente ao Balneário', '15613-899', 'Águas Quentes', 'Fernandópolis', 'SP', 'Brasil'),
-('E046', 'Rua Amazonas', '125', 'Casa', '15600-030', 'Centro', 'Fernandópolis', 'SP', 'Brasil'),
-('E047', 'Av. dos Arnaldos', '450', 'Apto 34', '15607-100', 'Parque Universitário', 'Fernandópolis', 'SP', 'Brasil'),
-('E048', 'Rua São Paulo', '815', 'Fundos', '15600-020', 'Centro', 'Fernandópolis', 'SP', 'Brasil'),
-('E049', 'Rua Rio de Janeiro', '321', 'Casa 2', '15608-050', 'Brasilândia', 'Fernandópolis', 'SP', 'Brasil'),
-('E050', 'Rua Paraná', '654', NULL, '15605-020', 'Jardim Paulista', 'Fernandópolis', 'SP', 'Brasil'),
-('E051', 'Tv. Pio XII', '77', 'Edícula', '15603-504', 'Parque São Bernardo', 'Fernandópolis', 'SP', 'Brasil');
+INSERT INTO ENDERECOVENDEDOR (IDVend, IDEndereco) VALUES
+(1, 46), (2, 47), (3, 48), (4, 49), (5, 50), (6, 51);
 
+-- Telefones
+INSERT INTO CLIENTE_CELCLIENTE (CelCliente, IDCliente) VALUES
+('(17) 99999-0000', 1),
+('(17) 98123-4567', 2),
+('(17) 3462-1111', 2),
+('(17) 99182-7364', 3),
+('(17) 99765-4321', 4),
+('(17) 98888-5555', 5),
+('(11) 97777-6666', 5),
+('(17) 99234-5678', 6),
+('(17) 99345-6789', 7),
+('(17) 99456-7890', 8),
+('(17) 3462-2222', 8),
+('(17) 99567-8901', 9),
+('(17) 3462-3333', 10),
+('(17) 99678-9012', 11),
+('(17) 3462-4444', 11),
+('(17) 99789-0123', 12),
+('(17) 99890-1234', 13);
 
--- Estudar remoção, já que é 1 pra 1
-INSERT INTO ENDERECOVENDEDOR VALUES 
-('E046', 'V001'),
-('E047', 'V002'),
-('E048', 'V003'),
-('E049', 'V004'),
-('E050', 'V005'),
-('E051', 'V006');
+INSERT INTO FORNECEDOR_CELFORN (CelForn, IDForn) VALUES
+('(17) 3232-1000', 1),
+('(17) 99123-0001', 1),
+('(17) 3211-2000', 2),
+('(17) 99666-3333', 3),
+('(17) 99777-4444', 4),
+('(17) 99777-4445', 4),
+('(17) 99888-5555', 5),
+('(17) 3462-5050', 6),
+('(17) 99999-6666', 6),
+('(17) 3462-6060', 7),
+('(17) 99111-7777', 8),
+('(17) 3462-7070', 9),
+('(17) 99222-8888', 9),
+('(17) 99333-9999', 10);
 
-INSERT INTO ENTRADAESTOQUE VALUES 
-('001', 'F002', '007', 12.00, 8.90, '2026-02-02'),
-('002', 'F005', '039', 60.00, 1.70, '2026-02-03'),
-('003', 'F001', '018', 10.00, 25.40, '2026-02-03'),
-('004', 'F010', '003', 5.00, 3.00, '2026-02-05'),
-('005', 'F006', '014', 3.00, 6.00, '2026-02-05');
+-- Operacoes de caixa
+INSERT INTO OPERACAOCAIXA (IDOperacao, DataOpAber, ValorOpAber, DataOpFecham, ValorOpFecham, SaldoOp, IDVend, IDCaixa) VALUES
+(1, '2026-02-02 07:30:00', 230.00, '2026-02-02 13:20:00', 383.77, 153.77, 2, 1),
+(2, '2026-02-02 11:00:00', 250.00, '2026-02-02 18:00:00', 285.97, 35.97, 1, 3),
+(3, '2026-02-03 07:30:00', 230.00, '2026-02-03 13:20:00', 486.38, 256.38, 4, 1),
+(4, '2026-02-03 11:00:00', 250.00, '2026-02-03 18:00:00', 444.08, 194.08, 3, 3),
+(5, '2026-02-04 08:00:00', 250.00, '2026-02-04 13:00:00', 395.62, 145.62, 5, 2);
 
-INSERT INTO PERDAESTOQUE VALUES 
-('001', '2026-02-27', 3.98, 'Apodreceu', 3.00, '006'),
-('002', '2026-03-01', 2.00, 'Murchou', 6.00, '014'),
-('003', '2026-03-01', 1.00, 'Caiu e explodiu', 8.90, '012'),
-('004', '2026-03-07', 4.00, 'Azedou', 5.50, '108'),
-('005', '2026-03-11', 12.00, 'Melância Passada', 2.94, '050');
+-- Pedidos
+INSERT INTO PEDIDO (IDPedido, ValorTotalPedido, DataPedido, TipoPedido, IDCliente, IDOperacao) VALUES
+(1, 15.00, '2026-04-05 09:10:00', 'Venda', 3, 1),
+(2, 35.97, '2026-04-09 10:15:00', 'Venda', 9, 2),
+(3, 5.00, '2026-04-04 11:20:00', 'Venda', 8, 1),
+(4, 133.77, '2026-04-07 12:25:00', 'Venda', 7, 1),
+(5, 9.99, '2026-04-07 13:30:00', 'Delivery', 4, 3),
+(6, 13.98, '2026-04-07 14:35:00', 'Venda', 5, 3),
+(7, 46.34, '2026-04-07 15:40:00', 'Venda', 8, 4),
+(8, 141.75, '2026-04-04 16:45:00', 'Delivery', 1, 4),
+(9, 20.00, '2026-04-08 17:50:00', 'Delivery', 2, 3),
+(10, 166.41, '2026-04-02 09:00:00', 'Venda', 8, 3),
+(11, 46.00, '2026-04-09 10:00:00', 'Venda', 10, 3),
+(12, 5.99, '2026-04-06 11:00:00', 'Delivery', 4, 4),
+(13, 76.57, '2026-04-11 12:00:00', 'Delivery', 6, 5),
+(14, 30.49, '2026-04-09 13:00:00', 'Delivery', 11, 5),
+(15, 38.56, '2026-04-03 14:00:00', 'Venda', 12, 5);
 
-INSERT INTO FORNECEDOR VALUES 
-('F001', '43.123.456/0001-12', 'CEASA - CEAGESP - São José do Rio Preto'),
-('F002', '55.987.654/0001-99', 'Coca-Cola FEMSA Brasil'),
-('F003', '12.345.678/0001-00', 'Roça do Eduardinho, não ironicamente'),
-('F004', '98.765.432/0001-11', 'Sítio Santo Antônio (Família Souza)'),
-('F005', '11.222.333/0001-44', 'Sítio do Vovô Kaká'),
-('F006', '44.555.666/0001-77', 'Fazenda Vale Verde (Produção Orgânica)'),
-('F007', '77.888.999/0001-22', 'Cooperativa Agrícola Regional'),
-('F008', '33.444.555/0001-88', 'Hortaliças Dona Maria'),
-('F009', '66.777.888/0001-33', 'Hortifruti da Família Produções'),
-('F010', '99.000.111/0001-55', 'Seu Jair das aguas termais');
+-- Itens dos pedidos
+INSERT INTO ITEMPEDIDO (IDProd, IDPedido, QtdItem, DescItem, PrecoUn) VALUES
+(1, 1, 3.000, 0.00, 5.00),
+(2, 2, 3.000, 0.00, 11.99),
+(1, 3, 1.000, 0.00, 5.00),
+(25, 4, 3.000, 0.00, 26.59),
+(28, 4, 3.000, 0.00, 18.00),
+(17, 5, 1.000, 0.00, 9.99),
+(19, 6, 1.000, 0.00, 9.99),
+(13, 6, 1.000, 0.00, 3.99),
+(9, 7, 2.000, 0.00, 3.69),
+(26, 7, 3.000, 0.00, 11.99),
+(16, 7, 1.000, 0.00, 2.99),
+(23, 8, 1.000, 0.00, 24.99),
+(8, 8, 1.000, 0.00, 36.99),
+(25, 8, 3.000, 0.00, 26.59),
+(18, 9, 2.000, 0.00, 10.00),
+(8, 10, 3.000, 0.00, 36.99),
+(2, 10, 3.000, 0.00, 11.99),
+(11, 10, 3.000, 0.00, 6.49),
+(6, 11, 2.000, 0.00, 8.00),
+(21, 11, 3.000, 0.00, 10.00),
+(4, 12, 1.000, 0.00, 5.99),
+(23, 13, 2.000, 0.00, 24.99),
+(25, 13, 1.000, 0.00, 26.59),
+(11, 14, 1.000, 0.00, 6.49),
+(20, 14, 3.000, 0.00, 8.00),
+(14, 15, 2.000, 0.00, 3.79),
+(10, 15, 1.000, 0.00, 5.99),
+(6, 15, 1.000, 0.00, 8.00),
+(22, 15, 1.000, 0.00, 16.99);
 
-INSERT INTO FORNECEDOR_CELFORN VALUES 
-('(17) 3232-1000', 'F001'),
-('(17) 99123-0001', 'F001'),
-('(17) 3211-2000', 'F002'),
-('(17) 99666-3333', 'F003'),
-('(17) 99777-4444', 'F004'),
-('(17) 99777-4445', 'F004'),
-('(17) 99888-5555', 'F005'),
-('(17) 3462-5050', 'F006'),
-('(17) 99999-6666', 'F006'),
-('(17) 3462-6060', 'F007'),
-('(17) 99111-7777', 'F008'),
-('(17) 3462-7070', 'F009'),
-('(17) 99222-8888', 'F009'),
-('(17) 99333-9999', 'F010');
+-- Pagamentos
+INSERT INTO PAGAMENTO (IDPag, MetodoPag, ValorPag, DataPag, IDPedido) VALUES
+(1, 'Pix', 15.00, '2026-04-05 09:15:00', 1),
+(2, 'Cartao de Credito', 35.97, '2026-04-09 10:20:00', 2),
+(3, 'Dinheiro', 5.00, '2026-04-04 11:25:00', 3),
+(4, 'Dinheiro', 50.00, '2026-04-07 12:30:00', 4),
+(5, 'Cartao de Debito', 83.77, '2026-04-07 12:31:00', 4),
+(6, 'Pix', 9.99, '2026-04-07 13:35:00', 5),
+(7, 'Cartao de Debito', 13.98, '2026-04-07 14:40:00', 6),
+(8, 'Cartao de Credito', 46.34, '2026-04-07 15:45:00', 7),
+(9, 'Pix', 141.75, '2026-04-04 16:50:00', 8),
+(10, 'Dinheiro', 20.00, '2026-04-08 17:55:00', 9),
+(11, 'Vale Alimentacao', 100.00, '2026-04-02 09:05:00', 10),
+(12, 'Cartao de Credito', 66.41, '2026-04-02 09:06:00', 10),
+(13, 'Pix', 46.00, '2026-04-09 10:05:00', 11),
+(14, 'Dinheiro', 5.99, '2026-04-06 11:05:00', 12),
+(15, 'Cartao de Credito', 76.57, '2026-04-11 12:05:00', 13),
+(16, 'Pix', 30.49, '2026-04-09 13:05:00', 14),
+(17, 'Cartao de Debito', 38.56, '2026-04-03 14:05:00', 15);
 
-INSERT INTO PAGAMENTO VALUES 
-('001', 'Pix', 15.00, '2026-04-05', '001'),
-('002', 'Cartão de Crédito', 35.97, '2026-04-09', '002'),
-('003', 'Dinheiro', 5.00, '2026-04-04', '003'),
-('004', 'Dinheiro', 50.00, '2026-04-07', '004'),
-('005', 'Cartão de Débito', 83.77, '2026-04-07', '004'),
-('006', 'Pix', 9.99, '2026-04-07', '005'),
-('007', 'Cartão de Débito', 13.98, '2026-04-07', '006'),
-('008', 'Cartão de Crédito', 46.34, '2026-04-07', '007'),
-('009', 'Pix', 141.75, '2026-04-04', '008'),
-('010', 'Dinheiro', 20.00, '2026-04-08', '009'),
-('011', 'Vale Alimentação', 100.00, '2026-04-02', '010'),
-('012', 'Cartão de Crédito', 66.41, '2026-04-02', '010'),
-('013', 'Pix', 46.00, '2026-04-09', '011'),
-('014', 'Dinheiro', 5.99, '2026-04-06', '012'),
-('015', 'Cartão de Crédito', 76.57, '2026-04-11', '013'),
-('016', 'Pix', 30.49, '2026-04-09', '014'),
-('017', 'Cartão de Débito', 38.56, '2026-04-03', '015');
+-- Entradas de estoque
+INSERT INTO ENTRADAESTOQUE (IDEntrada, IDForn, IDProd, EntradaData, EntradaQtd, EntradaPreco) VALUES
+(1, 2, 26, '2026-02-02 08:00:00', 12.000, 8.90),
+(2, 5, 14, '2026-02-03 08:00:00', 60.000, 1.70),
+(3, 1, 18, '2026-02-03 08:00:00', 10.000, 25.40),
+(4, 10, 3, '2026-02-05 08:00:00', 5.000, 3.00),
+(5, 6, 13, '2026-02-05 08:00:00', 3.000, 6.00);
 
-INSERT INTO ITEMPEDIDO VALUES 
-('003', '001', 3.00, NULL, 5.00),
-('004', '002', 3.00, NULL, 11.99),
-('004', '003', 1.00, NULL, 5.00),
-('005', '004', 3.00, NULL, 26.59),
-('006', '004', 3.00, NULL, 18.00),
-('013', '005', 1.00, NULL, 9.99),
-('014', '006', 1.00, NULL, 9.99),
-('018', '006', 1.00, NULL, 3.99),
-('021', '007', 2.00, NULL, 3.69),
-('022', '007', 3.00, NULL, 11.99),
-('026', '007', 1.00, NULL, 2.99),
-('036', '008', 1.00, NULL, 24.99),
-('039', '008', 1.00, NULL, 36.99),
-('050', '008', 3.00, NULL, 26.59),
-('074', '009', 2.00, NULL, 10.00),
-('086', '010', 3.00, NULL, 36.99),
-('087', '010', 3.00, NULL, 11.99),
-('100', '010', 3.00, NULL, 6.49),
-('107', '011', 2.00, NULL, 8.00),
-('108', '011', 3.00, NULL, 10.00),
-('110', '012', 1.00, NULL, 5.99),
-('117', '013', 2.00, NULL, 24.99),
-('123', '013', 1.00, NULL, 26.59),
-('124', '014', 1.00, NULL, 6.49),
-('253', '014', 3.00, NULL, 8.00),
-('300', '015', 2.00, NULL, 3.79),
-('550', '015', 1.00, NULL, 5.99),
-('900', '015', 1.00, NULL, 8.00),
-('117', '015', 1.00, NULL, 16.99);
+-- Perdas de estoque
+INSERT INTO PERDAESTOQUE (IDPerda, DataPerda, QtdPerda, MotivoPerda, ValorUnPerda, IDProd) VALUES
+(1, '2026-02-27 10:00:00', 3.980, 'Apodreceu', 3.00, 6),
+(2, '2026-03-01 10:00:00', 2.000, 'Murchou', 6.00, 13),
+(3, '2026-03-01 10:00:00', 1.000, 'Caiu e quebrou', 8.90, 12),
+(4, '2026-03-07 10:00:00', 4.000, 'Azedou', 5.50, 18),
+(5, '2026-03-11 10:00:00', 12.000, 'Melancia passada', 2.94, 14);
 
-
-INSERT INTO PEDIDO VALUES 
-('001', 15.00, '2026-04-05', 'Venda', '003', '001'),
-('002', 35.97, '2026-04-09', 'Venda', '009', '002'),
-('003', 5.00, '2026-04-04', 'Venda', '008', '001'),
-('004', 133.77, '2026-04-07', 'Venda', '007', '001'),
-('005', 9.99, '2026-04-07', 'Delivery', '004', '003'),
-('006', 13.98, '2026-04-07', 'Venda', '005', '003'),
-('007', 46.34, '2026-04-07', 'Venda', '008', '004'),
-('008', 141.75, '2026-04-04', 'Delivery', '001', '004'),
-('009', 20.00, '2026-04-08', 'Delivery', '002', '003'),
-('010', 166.41, '2026-04-02', 'Venda', '008', '003'),
-('011', 46.00, '2026-04-09', 'Venda', '010', '003'),
-('012', 5.99, '2026-04-06', 'Delivery', '004', '004'),
-('013', 76.57, '2026-04-11', 'Delivery', '006', '005'),
-('014', 30.49, '2026-04-09', 'Delivery', '011', '005'),
-('015', 38.56, '2026-04-03', 'Venda', '012', '005');
+COMMIT;
