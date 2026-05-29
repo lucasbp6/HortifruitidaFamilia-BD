@@ -1,13 +1,14 @@
 -- Inserir dados na tabela Categoria
-INSERT INTO Categoria  VALUES (1, 'Hortifruti');
-INSERT INTO Categoria  VALUES (2, 'Mercearia');
-INSERT INTO Categoria  VALUES (3, 'Legumes', 1);
-INSERT INTO Categoria  VALUES (4, 'Frutas', 1);
-INSERT INTO Categoria  VALUES (5, 'Bebidas', 2);
-INSERT INTO Categoria  VALUES (6, 'Verduras', 1);
-INSERT INTO Categoria  VALUES (7, 'Limpeza', 2);
-INSERT INTO Categoria  VALUES (8, 'Temperos', 2);
-INSERT INTO Categoria  VALUES (9, 'Alimentação', 2);
+INSERT INTO Categoria  VALUES 
+(1, 'Hortifruti'),
+(2, 'Mercearia'),
+(3, 'Legumes', 1),
+(4, 'Frutas', 1),
+(5, 'Bebidas', 2),
+(6, 'Verduras', 1),
+(7, 'Limpeza', 2),
+(8, 'Temperos', 2),
+(9, 'Alimentação', 2);
 
 -- Inserir dados na tabela Produto
 INSERT INTO Produto VALUES 
