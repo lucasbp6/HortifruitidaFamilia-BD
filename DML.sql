@@ -35,7 +35,7 @@ INSERT INTO FORNECEDOR (IDForn, NomeForn, CNPJForn) VALUES
 
 -- Clientes
 INSERT INTO CLIENTE (IDCliente, NomeCliente, DataNascCliente, CPFCliente) VALUES
-(1, 'Usuario', '2022-11-24', '00000000000'),
+(1, 'Usuario Nao identificado', '2022-11-24', '00000000000'),
 (2, 'Samyra Mara Candido Silva', '2005-10-08', '14523678901'),
 (3, 'Lucas Batista Pereira', '2006-01-28', '25896314722'),
 (4, 'Joao Gabriel Carneiro Calbo', '2005-07-09', '36985214733'),
@@ -297,5 +297,6 @@ INSERT INTO PERDAESTOQUE (IDPerda, DataPerda, QtdPerda, MotivoPerda, ValorUnPerd
 (3, '2026-03-01 10:00:00', 1.000, 'Caiu e quebrou', 8.90, 12),
 (4, '2026-03-07 10:00:00', 4.000, 'Azedou', 5.50, 18),
 (5, '2026-03-11 10:00:00', 12.000, 'Melancia passada', 2.94, 14);
+
 
 COMMIT;
