@@ -82,6 +82,14 @@ class FormularioModal(ModalScreen):
             size = len(self.dados_iniciais)
             values = {}
 
+def on_button_pressed(self, event: Button.Pressed) -> None:
+        
+        if event.button.id == "btn-cancelar":
+            self.dismiss(None) 
+            
+        elif event.button.id == "btn-salvar":
+            valores_validados = {}
+
             # Varredura de validação
             for i, (coluna, tipo_esperado) in enumerate(zip(self.dados_iniciais, self.tipos)):
                 valor_texto = self.query_one(f"#input-{i}", Input).value.strip()
@@ -95,17 +103,37 @@ class FormularioModal(ModalScreen):
                         self.app.notify(f"O campo '{coluna}' é obrigatório!", severity="error")
                         return 
 
-                # 2. VERIFICAÇÃO ESTRITA DE TIPAGEM (Apenas valida, não converte)
-                tipo_base = tipo_esperado.split(" | ")[0].strip()
+                # 2. SEPARAÇÃO DO TIPO E DO TAMANHO
+                # Pega a parte antes do " | None" (se houver)
+                tipo_full = tipo_esperado.split(" | ")[0].strip() 
                 
+                # Lógica para extrair o limite dentro dos parênteses
+                if "(" in tipo_full:
+                    tipo_base = tipo_full.split("(")[0] # Pega "str" ou "char"
+                    # Extrai o número e converte para inteiro
+                    tamanho_limite = int(tipo_full.split("(")[1].replace(")", "")) 
+                else:
+                    tipo_base = tipo_full
+                    tamanho_limite = None
+
+                # 3. VERIFICAÇÕES DE TAMANHO (A nova barreira!)
+                if tipo_base == "str" and tamanho_limite is not None:
+                    if len(valor_texto) > tamanho_limite:
+                        self.app.notify(f"O campo '{coluna}' aceita no MÁXIMO {tamanho_limite} caracteres. Você digitou {len(valor_texto)}.", severity="error")
+                        return
+                        
+                elif tipo_base == "char" and tamanho_limite is not None:
+                    if len(valor_texto) != tamanho_limite:
+                        self.app.notify(f"O campo '{coluna}' precisa ter EXATOS {tamanho_limite} caracteres. Faltam traços/pontos?", severity="error")
+                        return
+
+                # 4. VERIFICAÇÃO ESTRITA DE TIPAGEM (A barreira antiga, mantida)
                 if tipo_base == "int":
-                    # Rejeita se tiver letras (ex: "A", "10A", "10.5")
                     if not valor_texto.isdigit():
                         self.app.notify(f"O campo '{coluna}' aceita APENAS números inteiros.", severity="error")
                         return
                         
                 elif tipo_base == "float":
-                    # Testa se é possível ser um número decimal
                     try:
                         float(valor_texto.replace(",", "."))
                     except ValueError:
@@ -113,7 +141,6 @@ class FormularioModal(ModalScreen):
                         return
                         
                 elif tipo_base == "date":
-                    # Testa se respeita o calendário
                     try:
                         datetime.strptime(valor_texto, "%Y-%m-%d")
                     except ValueError:
@@ -127,12 +154,10 @@ class FormularioModal(ModalScreen):
                         self.app.notify(f"Data/Hora inválida em '{coluna}'.", severity="error")
                         return
 
-                # 3. SALVAMENTO ORIGINAL
-                # Se passou por todas as barreiras acima (não caiu em nenhum return), 
-                # nós salvamos o texto EXATAMENTE como o usuário digitou.
+                # 5. SALVAMENTO ORIGINAL
                 valores_validados[coluna] = valor_texto
             
-            # Fecha a tela enviando os dados validados (todos no formato string original)
+            # Fecha a tela enviando os dados limpos e validados
             self.dismiss(valores_validados)
             
 # --- TELA INICIAL ---
