@@ -1,6 +1,6 @@
 TABELAS = {
-    "Categoria": (
-        ("id_cat", "nome_cat", "id_cat_pai"),
+    "CATEGORIA": (
+        ("IDCat", "NomeCat", "IDCatPai"),
         ("int", "str(20)", "int | None")
     ),
     "UnidadeMedida": (          

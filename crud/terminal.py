@@ -3,6 +3,7 @@ from textual.screen import Screen, ModalScreen
 from textual.widgets import Footer, Placeholder, Button, Static, DataTable, Input, Label, ContentSwitcher
 from textual.containers import Vertical, Horizontal
 import entities
+import operacoes
 '''
 # Adicionamos a Tabela 
         yield DataTable(id="minha-lista")
@@ -45,8 +46,39 @@ def on_mount(self) -> None:
             tabela.add_row(novo_id, nome, valor)
         '''
 
+class View(ModalScreen):
+    ''' 
+    TODO: acrescentar a ideia de que eu vou ter diversos tipos de formularios a partir de uma lista de atributos que eu espero receber 
+    '''
+    # 1. Construtor para receber tuplas como sendo os valores que precisamos coletar
+    def __init__(self, tabela: tuple, **kwargs):
+        super().__init__(**kwargs)
+        self.tabela = tabela
+    
+    def compose(self) -> ComposeResult:
+        yield Button("Tela Inicial", id="btn-inicial", variant="primary")
+
+        yield DataTable(id="minha-lista")
+
+    def on_mount(self) -> None:
+        lista = self.query_one("#minha-lista", DataTable)
+        
+        # 2. Define o cabeçalho (precisa bater com o que você vai pedir no SELECT)
+        colunas = entities.TABELAS[self.tabela][0]
+        lista.add_columns(*colunas)
+        
+        # 3. Chama a sua função select do banco de dados
+        # Isso vai retornar aquela lista de tuplas: [(1, 'Maçã', 5.99, 150), ...]
+        dados_banco = operacoes.select(self.tabela)
+        
+        # 4. Injeta os dados na tabela de uma vez só!
+        if dados_banco:
+            lista.add_rows(dados_banco)
 
 
+    def on_button_pressed(self, event: Button.Pressed) -> None:
+        if event.button.id == "btn-inicial":
+            self.app.switch_mode("inicial")
 # POPUP para receber valores
 class FormularioModal(ModalScreen):
     ''' 
@@ -71,18 +103,18 @@ class FormularioModal(ModalScreen):
                 yield Button("Salvar", id="btn-salvar", variant="success")
                 yield Button("Cancelar", id="btn-cancelar", variant="error")
 
-    def on_button_pressed(self, event: Button.Pressed) -> None:
+    # def on_button_pressed(self, event: Button.Pressed) -> None:
         
-        if event.button.id == "btn-cancelar":
-            # Fecha a tela enviando 'None' 
-            self.dismiss(None) 
+    #     if event.button.id == "btn-cancelar":
+    #         # Fecha a tela enviando 'None' 
+    #         self.dismiss(None) 
             
-        elif event.button.id == "btn-salvar":
-            # Captura o texto digitado nos Inputs
-            size = len(self.dados_iniciais)
-            values = {}
+    #     elif event.button.id == "btn-salvar":
+    #         # Captura o texto digitado nos Inputs
+    #         size = len(self.dados_iniciais)
+    #         values = {}
 
-def on_button_pressed(self, event: Button.Pressed) -> None:
+    def on_button_pressed(self, event: Button.Pressed) -> None:
         
         if event.button.id == "btn-cancelar":
             self.dismiss(None) 
@@ -207,7 +239,7 @@ class ViewScreen(Screen):
         # yield Button("Endereço Vendedores", id="btn-vw-endvend")
         yield Button("Unidades", id="btn-vw-UnidadeMedida")
         yield Button("Produtos", id="btn-vw-Produto")
-        yield Button("Categorias", id="btn-vw-Categoria")
+        yield Button("Categorias", id="btn-vw-CATEGORIA")
         yield Button("Entrada estoque", id="btn-vw-EntradaDeEstoque")
         yield Button("Perda estoque", id="btn-vw-PerdaDeEstoque")
         yield Button("Vendas", id="btn-vw-Pedido")
@@ -221,6 +253,11 @@ class ViewScreen(Screen):
     def on_button_pressed(self, event: Button.Pressed) -> None:
         if event.button.id == "btn-inicial":
             self.app.switch_mode("inicial")
+
+        elif event.button.id[:7] == "btn-vw-":
+            self.app.push_screen(View(event.button.id[7:]))
+
+
 
 class OperationScreen(Screen):
     def __init__(self, **kwargs):
