@@ -55,7 +55,8 @@ class FormularioModal(ModalScreen):
     # 1. Construtor para receber tuplas como sendo os valores que precisamos coletar
     def __init__(self, dados_iniciais: tuple, **kwargs):
         super().__init__(**kwargs)
-        self.dados_iniciais = dados_iniciais
+        self.dados_iniciais = dados_iniciais[0]
+        self.tipos = dados_iniciais[1]
     
     def compose(self) -> ComposeResult:
         with Vertical(id="caixa-formulario"):
@@ -81,16 +82,59 @@ class FormularioModal(ModalScreen):
             size = len(self.dados_iniciais)
             values = {}
 
-            for i in range(size):
-                values[self.dados_iniciais[i]] = self.query_one(f"#input-{i}", Input).value
-            # nome = self.query_one("#input-nome", Input).value
-            # valor = self.query_one("#input-valor", Input).value
+            # Varredura de validação
+            for i, (coluna, tipo_esperado) in enumerate(zip(self.dados_iniciais, self.tipos)):
+                valor_texto = self.query_one(f"#input-{i}", Input).value.strip()
+                
+                # 1. VERIFICAÇÃO DE CAMPO VAZIO
+                if not valor_texto:
+                    if "None" in tipo_esperado:
+                        valores_validados[coluna] = None
+                        continue 
+                    else:
+                        self.app.notify(f"O campo '{coluna}' é obrigatório!", severity="error")
+                        return 
+
+                # 2. VERIFICAÇÃO ESTRITA DE TIPAGEM (Apenas valida, não converte)
+                tipo_base = tipo_esperado.split(" | ")[0].strip()
+                
+                if tipo_base == "int":
+                    # Rejeita se tiver letras (ex: "A", "10A", "10.5")
+                    if not valor_texto.isdigit():
+                        self.app.notify(f"O campo '{coluna}' aceita APENAS números inteiros.", severity="error")
+                        return
+                        
+                elif tipo_base == "float":
+                    # Testa se é possível ser um número decimal
+                    try:
+                        float(valor_texto.replace(",", "."))
+                    except ValueError:
+                        self.app.notify(f"O campo '{coluna}' aceita APENAS números (ex: 10.50).", severity="error")
+                        return
+                        
+                elif tipo_base == "date":
+                    # Testa se respeita o calendário
+                    try:
+                        datetime.strptime(valor_texto, "%Y-%m-%d")
+                    except ValueError:
+                        self.app.notify(f"Data inválida em '{coluna}'. Use AAAA-MM-DD.", severity="error")
+                        return
+                        
+                elif tipo_base == "datetime":
+                    try:
+                        datetime.strptime(valor_texto, "%Y-%m-%d %H:%M:%S")
+                    except ValueError:
+                        self.app.notify(f"Data/Hora inválida em '{coluna}'.", severity="error")
+                        return
+
+                # 3. SALVAMENTO ORIGINAL
+                # Se passou por todas as barreiras acima (não caiu em nenhum return), 
+                # nós salvamos o texto EXATAMENTE como o usuário digitou.
+                valores_validados[coluna] = valor_texto
             
-            # print(values)
-            # Fecha a tela enviando os dados de volta
-            self.dismiss(values)
-
-
+            # Fecha a tela enviando os dados validados (todos no formato string original)
+            self.dismiss(valores_validados)
+            
 # --- TELA INICIAL ---
 class InitialScreen(Screen):
     def compose(self) -> ComposeResult:

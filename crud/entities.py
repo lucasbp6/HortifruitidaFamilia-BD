@@ -4,50 +4,58 @@ from typing import Any
 from datetime import date, datetime
 
 TABELAS = {
-    "Categoria": [
-        "id_cat", "nome_cat", "id_cat_pai"
-    ],
-    "UnidadeMedida": [
-        "id_unidade", "nome_unidade", "sigla_unidade"
-    ],
-    "Fornecedor": [
-        "id_forn", "nome_forn", "cnpj_forn"
-    ],
-    "Cliente": [
-        "id_cliente", "nome_cliente", "data_nasc_cliente", "cpf_cliente"
-    ],
-    "Vendedor": [
-        "id_vend", "nome_vend", "data_nasc_vend", "cel_vend", "cpf_vend"
-    ],
-    "Produto": [
-        "id_prod", "nome_prod", "preco_venda_prod", "estoque_atual_prod", 
-        "preco_custo_prod", "id_unidade", "id_cat", "descricao_prod"
-    ],
-    "OperacaoCaixa": [
-        "id_operacao", "data_op_aber", "valor_op_aber", "data_op_fecham", 
-        "valor_op_fecham", "saldo_op", "id_vend", "id_caixa"
-    ],
-    "Pedido": [
-        "id_pedido", "valor_total_pedido", "data_pedido", "tipo_pedido", 
-        "id_cliente", "id_operacao"
-    ],
-    "ItemPedido": [
-        "id_prod", "id_pedido", "qtd_item", "preco_un", "desc_item"
-    ],
-    "Endereco": [
-        "id_endereco", "rua", "numero", "complemento", "bairro", 
-        "cidade", "estado", "cep"
-    ],
-    "Caixa": [
-        "id_caixa", "tipo_caixa"
-    ],
-    "PerdaDeEstoque": [
-        "id_perda", "data_perda", "qtd_perda", "motivo_perda", "id_prod"
-    ],
-    "EntradaDeEstoque": [
-        "id_entrada", "data_entrada", "qtd_entrada", "id_prod", 
-        "id_forn", "preco_entrada"
-    ]
+    "Categoria": (
+        ("id_cat", "nome_cat", "id_cat_pai"),
+        ("int", "str", "int | None")
+    ),
+    "UnidadeMedida": (          
+        ("id_unidade", "nome_unidade", "sigla_unidade"),
+        ("int", "str", "str")
+    ),                                                                                                                                                                                                                                                        
+    "Fornecedor": (
+        ("id_forn", "nome_forn", "cnpj_forn"),
+        ("int", "str", "str")
+    ),
+    "Cliente": (
+        ("id_cliente", "nome_cliente", "data_nasc_cliente", "cpf_cliente"),
+        ("int", "str", "date", "str")
+    ),
+    "Vendedor": (
+        ("id_vend", "nome_vend", "data_nasc_vend", "cel_vend", "cpf_vend"),
+        ("int", "str", "date", "str", "str")
+    ),
+    "Produto": (
+        ("id_prod", "nome_prod", "preco_venda_prod", "estoque_atual_prod", "preco_custo_prod", "id_unidade", "id_cat", "descricao_prod"),
+        ("int", "str", "float", "float", "float", "int", "int", "str | None")
+    ),
+    "OperacaoCaixa": (
+        ("id_operacao", "data_op_aber", "valor_op_aber", "data_op_fecham", "valor_op_fecham", "saldo_op", "id_vend", "id_caixa"),
+        ("int", "datetime", "float", "datetime", "float", "float", "int", "int")
+    ),
+    "Pedido": (
+        ("id_pedido", "valor_total_pedido", "data_pedido", "tipo_pedido", "id_cliente", "id_operacao"),
+        ("int", "float", "datetime", "str", "int", "int")
+    ),
+    "ItemPedido": (
+        ("id_prod", "id_pedido", "qtd_item", "preco_un", "desc_item"),
+        ("int", "int", "float", "float", "float")
+    ),
+    "Endereco": (
+        ("id_endereco", "rua", "numero", "complemento", "bairro", "cidade", "estado", "cep"),
+        ("int", "str", "int", "str | None", "str", "str", "str", "str")
+    ),
+    "Caixa": (
+        ("id_caixa", "tipo_caixa"),
+        ("int", "str")
+    ),
+    "PerdaDeEstoque": (
+        ("id_perda", "data_perda", "qtd_perda", "motivo_perda", "id_prod"),
+        ("int", "datetime", "float", "str", "int")
+    ),
+    "EntradaDeEstoque": (
+        ("id_entrada", "data_entrada", "qtd_entrada", "id_prod", "id_forn", "preco_entrada"),
+        ("int", "datetime", "float", "int", "int", "float")
+    )
 }
 
 def criar_categoria(id_cat: int, nome_cat: str, id_cat_pai: int | None = None) -> dict[str, Any]:
