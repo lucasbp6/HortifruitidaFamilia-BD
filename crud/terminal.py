@@ -174,19 +174,21 @@ class ViewScreen(Screen):
 
         #Seleção de qual tabela vizualizar, fazer com que eles chamem a função correta
         #talvez mudar o id para o nome da tabela
-        yield Button("Clientes", id="btn-vw-clientes")
-        yield Button("Fornecedores", id="btn-vw-forn")
-        yield Button("Vendedores", id="btn-vw-vend")
-        yield Button("Endereço Clientes", id="btn-vw-endclien")
-        yield Button("Endereço fornecedores", id="btn-vw-endforn")
-        yield Button("Endereço Vendedores", id="btn-vw-endvend")
-        yield Button("Unidades", id="btn-vw-unid")
-        yield Button("Produtos", id="btn-vw-prod")
-        yield Button("Categorias", id="btn-vw-catg")
-        yield Button("Entrada estoque", id="btn-vw-entest")
-        yield Button("Perda estoque", id="btn-vw-perdaest")
-        yield Button("Vendas", id="btn-vw-vendas")
-        yield Button("Operações", id="btn-vw-oper")
+        yield Button("Clientes", id="btn-vw-Cliente")
+        yield Button("Fornecedores", id="btn-vw-Fornecedor")
+        yield Button("Vendedores", id="btn-vw-Vendedor")
+        yield Button("Endereço", id="btn-vw-Endereco")
+        # yield Button("Endereço fornecedores", id="btn-vw-endforn")
+        # yield Button("Endereço Vendedores", id="btn-vw-endvend")
+        yield Button("Unidades", id="btn-vw-UnidadeMedida")
+        yield Button("Produtos", id="btn-vw-Produto")
+        yield Button("Categorias", id="btn-vw-Categoria")
+        yield Button("Entrada estoque", id="btn-vw-EntradaDeEstoque")
+        yield Button("Perda estoque", id="btn-vw-PerdaDeEstoque")
+        yield Button("Vendas", id="btn-vw-Pedido")
+        yield Button("Operações", id="btn-vw-OperacaoCaixa")
+        yield Button("Caixas", id="btn-vw-Caixa")
+
 
 
         yield Footer()
@@ -215,15 +217,17 @@ class OperationScreen(Screen):
             with Vertical(id="tela-cadastro"):
                 yield Static("Aqui ficaria o seu formulário de cadastro...")
                 yield Button("Voltar para o Menu", id="btn-voltar", variant="error")
-                yield Button("Add Produto", id="btn-adprod")
-                yield Button("Add Categoria", id="btn-adcat")
-                yield Button("Add estoque", id="btn-adestq")
-                yield Button("Add Perda estoque", id="btn-adpestq")
-                yield Button("Add Cliente", id="btn-adcliente")
-                yield Button("Add Fornecedor", id="btn-adforn")
-                yield Button("Add Vendedor", id="btn-advend")
-                yield Button("Add Unidade", id="btn-aduni")
-                yield Button("Add Caixa", id="btn-adcx")
+                yield Button("Add Produto", id="btn-ad-Produto")
+                yield Button("Add Categoria", id="btn-ad-Categoria")
+                yield Button("Add estoque", id="btn-ad-EntradaDeEstoque")
+                yield Button("Add Perda estoque", id="btn-ad-PerdaDeEstoque")
+                yield Button("Add Cliente", id="btn-ad-Cliente")
+                yield Button("Add Fornecedor", id="btn-ad-Fornecedor")
+                yield Button("Add Vendedor", id="btn-ad-Vendedor")
+                yield Button("Add Unidade", id="btn-ad-UnidadeMedida")
+                yield Button("Add Caixa", id="btn-ad-Caixa")
+                yield Button("Add Endereco", id="btn-ad-Endereco")
+
 
 
             # VISÃO 3: Passo 1 da Venda (Identificação)
@@ -299,8 +303,8 @@ class OperationScreen(Screen):
         elif event.button.id == "btn-update":
             switcher.current = "tela-update"
 
-        elif event.button.id == "btn-adprod":
-            self.app.push_screen(FormularioModal(entities.TABELAS["Produto"]))
+        elif event.button.id[:7] == "btn-ad-":
+            self.app.push_screen(FormularioModal(entities.TABELAS[event.button.id[7:]]))
 
 
 class ModesApp(App):
