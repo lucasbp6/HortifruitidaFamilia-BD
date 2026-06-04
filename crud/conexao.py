@@ -22,23 +22,15 @@ if __name__ == "__main__":
     conn = conexao()
     
     try:
-        # 1. Cria o mensageiro (cursor)
         cursor = conn.cursor()
-        
-        # 2. Manda o comando SQL
         cursor.execute("SELECT version();")
-        
-        # 3. Pega o resultado de volta
-        resultado = cursor.fetchone() # fetchone() pega uma linha, fetchall() pega todas
-        
+        resultado = cursor.fetchone() 
         print("Comando executado! O banco respondeu:")
 
     except Exception as erro:
-        # Se algo der errado (erro de sintaxe no SQL, tabela não existe, etc), cai aqui
         print("Erro ao executar o comando:", erro)
 
     finally:
-        # 4. É importante fechar o cursor e a conexão no final
         cursor.close()
         conn.close()
         print("Conexão encerrada.")
