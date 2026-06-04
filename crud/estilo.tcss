@@ -1,0 +1,32 @@
+/* Centraliza o texto no fundo da tela principal */
+#texto-fundo {
+    width: 100%;
+    height: 1fr;
+    content-align: center middle;
+    color: $text-muted;
+}
+
+/* 1. Alinha o conteúdo do Modal bem no centro da tela */
+CaixaModal {
+    align: center middle;
+    /* Um fundo levemente transparente para escurecer a tela de trás */
+    background: $background 50%; 
+}
+
+/* 2. O desenho da "Box" */
+#caixa-central {
+    /* A box ocupará exatamente 50% da largura total do terminal */
+    width: 50%; 
+    height: auto;
+    padding: 2 4;
+    border: thick $primary;
+    background: $surface;
+    content-align: center middle;
+}
+
+/* 3. O Botão com Porcentagem */
+#caixa-central Button {
+    /* O botão ocupará 80% do espaço de dentro da box */
+    width: 80%; 
+    margin-top: 2;
+}
