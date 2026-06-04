@@ -2,7 +2,7 @@ from textual.app import App, ComposeResult
 from textual.screen import Screen, ModalScreen
 from textual.widgets import Footer, Placeholder, Button, Static, DataTable, Input, Label, ContentSwitcher
 from textual.containers import Vertical, Horizontal
-
+import entities
 '''
 # Adicionamos a Tabela 
         yield DataTable(id="minha-lista")
@@ -62,8 +62,8 @@ class FormularioModal(ModalScreen):
             yield Label("Cadastrar Novo Item", id="titulo-form")
             
             # Campos de preenchimento
-            yield Input(placeholder=f"Digite o {self.dados_iniciais[0]}...", id="input-nome")
-            yield Input(placeholder=f"Digite o {self.dados_iniciais[1]}...", id="input-valor")
+            for i in range(len(self.dados_iniciais)):
+                yield Input(placeholder=f"Digite o {self.dados_iniciais[i]}...", id=f"input-{i}")
             
             
             with Horizontal(id="botoes-form"):
@@ -78,14 +78,17 @@ class FormularioModal(ModalScreen):
             
         elif event.button.id == "btn-salvar":
             # Captura o texto digitado nos Inputs
-            nome = self.query_one("#input-nome", Input).value
-            valor = self.query_one("#input-valor", Input).value
+            size = len(self.dados_iniciais)
+            values = {}
+
+            for i in range(size):
+                values[self.dados_iniciais[i]] = self.query_one(f"#input-{i}", Input).value
+            # nome = self.query_one("#input-nome", Input).value
+            # valor = self.query_one("#input-valor", Input).value
             
-            # Empacota os dados
-            dados_novos = (nome, valor)
-            
+            # print(values)
             # Fecha a tela enviando os dados de volta
-            self.dismiss(dados_novos)
+            self.dismiss(values)
 
 
 # --- TELA INICIAL ---
@@ -249,9 +252,11 @@ class OperationScreen(Screen):
         elif event.button.id == "btn-deletar":
             switcher.current = "tela-deletar"
 
-
         elif event.button.id == "btn-update":
             switcher.current = "tela-update"
+
+        elif event.button.id == "btn-adprod":
+            self.app.push_screen(FormularioModal(entities.TABELAS["Produto"]))
 
 
 class ModesApp(App):

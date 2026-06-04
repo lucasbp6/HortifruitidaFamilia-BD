@@ -1,107 +1,171 @@
-#define as classes de dados para facilitar a manipulação dos dados e a integração com o banco de dados
+# Define as funções geradoras de dicionários para facilitar a manipulação dos dados e a integração com o banco de dados
 
-class Categoria:
-    def __init__(self, id_cat, nome_cat, id_cat_pai=None):
-        self.id_cat = id_cat
-        self.nome_cat = nome_cat
-        self.id_cat_pai = id_cat_pai
+from typing import Any
+from datetime import date, datetime
 
-class UnidadeMedida:
-    def __init__(self, id_unidade, nome_unidade, sigla_unidade):
-        self.id_unidade = id_unidade
-        self.nome_unidade = nome_unidade
-        self.sigla_unidade = sigla_unidade
+TABELAS = {
+    "Categoria": [
+        "id_cat", "nome_cat", "id_cat_pai"
+    ],
+    "UnidadeMedida": [
+        "id_unidade", "nome_unidade", "sigla_unidade"
+    ],
+    "Fornecedor": [
+        "id_forn", "nome_forn", "cnpj_forn"
+    ],
+    "Cliente": [
+        "id_cliente", "nome_cliente", "data_nasc_cliente", "cpf_cliente"
+    ],
+    "Vendedor": [
+        "id_vend", "nome_vend", "data_nasc_vend", "cel_vend", "cpf_vend"
+    ],
+    "Produto": [
+        "id_prod", "nome_prod", "preco_venda_prod", "estoque_atual_prod", 
+        "preco_custo_prod", "id_unidade", "id_cat", "descricao_prod"
+    ],
+    "OperacaoCaixa": [
+        "id_operacao", "data_op_aber", "valor_op_aber", "data_op_fecham", 
+        "valor_op_fecham", "saldo_op", "id_vend", "id_caixa"
+    ],
+    "Pedido": [
+        "id_pedido", "valor_total_pedido", "data_pedido", "tipo_pedido", 
+        "id_cliente", "id_operacao"
+    ],
+    "ItemPedido": [
+        "id_prod", "id_pedido", "qtd_item", "preco_un", "desc_item"
+    ],
+    "Endereco": [
+        "id_endereco", "rua", "numero", "complemento", "bairro", 
+        "cidade", "estado", "cep"
+    ],
+    "Caixa": [
+        "id_caixa", "tipo_caixa"
+    ],
+    "PerdaDeEstoque": [
+        "id_perda", "data_perda", "qtd_perda", "motivo_perda", "id_prod"
+    ],
+    "EntradaDeEstoque": [
+        "id_entrada", "data_entrada", "qtd_entrada", "id_prod", 
+        "id_forn", "preco_entrada"
+    ]
+}
 
-class Fornecedor:
-    def __init__(self, id_forn, nome_forn, cnpj_forn):
-        self.id_forn = id_forn
-        self.nome_forn = nome_forn
-        self.cnpj_forn = cnpj_forn
+def criar_categoria(id_cat: int, nome_cat: str, id_cat_pai: int | None = None) -> dict[str, Any]:
+    return {
+        "id_cat": id_cat,
+        "nome_cat": nome_cat,
+        "id_cat_pai": id_cat_pai
+    }
 
-class Cliente:
-    def __init__(self, id_cliente, nome_cliente, data_nasc_cliente, cpf_cliente):
-        self.id_cliente = id_cliente
-        self.nome_cliente = nome_cliente
-        self.data_nasc_cliente = data_nasc_cliente
-        self.cpf_cliente = cpf_cliente
+def criar_unidade_medida(id_unidade: int, nome_unidade: str, sigla_unidade: str) -> dict[str, Any]:
+    return {
+        "id_unidade": id_unidade,
+        "nome_unidade": nome_unidade,
+        "sigla_unidade": sigla_unidade
+    }
+
+def criar_fornecedor(id_forn: int, nome_forn: str, cnpj_forn: str) -> dict[str, Any]:
+    return {
+        "id_forn": id_forn,
+        "nome_forn": nome_forn,
+        "cnpj_forn": cnpj_forn
+    }
+
+def criar_cliente(id_cliente: int, nome_cliente: str, data_nasc_cliente: date | str, cpf_cliente: str) -> dict[str, Any]:
+    return {
+        "id_cliente": id_cliente,
+        "nome_cliente": nome_cliente,
+        "data_nasc_cliente": data_nasc_cliente,
+        "cpf_cliente": cpf_cliente
+    }
         
-class Vendedor:
-    def __init__(self, id_vend, nome_vend,data_nasc_vend, cel_vend, cpf_vend):
-        self.id_vend = id_vend
-        self.nome_vend = nome_vend
-        self.data_nasc_vend = data_nasc_vend
-        self.cel_vend = cel_vend
-        self.cpf_vend = cpf_vend
+def criar_vendedor(id_vend: int, nome_vend: str, data_nasc_vend: date | str, cel_vend: str, cpf_vend: str) -> dict[str, Any]:
+    return {
+        "id_vend": id_vend,
+        "nome_vend": nome_vend,
+        "data_nasc_vend": data_nasc_vend,
+        "cel_vend": cel_vend,
+        "cpf_vend": cpf_vend
+    }
 
-class Produto:
-    def __init__(self, id_prod, nome_prod, preco_venda_prod, estoque_atual_prod, preco_custo_prod, id_unidade, id_cat, descricao_prod=None):
-        self.id_prod = id_prod
-        self.nome_prod = nome_prod
-        self.preco_venda_prod = preco_venda_prod
-        self.estoque_atual_prod = estoque_atual_prod
-        self.preco_custo_prod = preco_custo_prod
-        self.id_unidade = id_unidade
-        self.id_cat = id_cat
-        self.descricao_prod = descricao_prod
+def criar_produto(id_prod: int, nome_prod: str, preco_venda_prod: float, estoque_atual_prod: float, preco_custo_prod: float, id_unidade: int, id_cat: int, descricao_prod: str | None = None) -> dict[str, Any]:
+    return {
+        "id_prod": id_prod,
+        "nome_prod": nome_prod,
+        "preco_venda_prod": preco_venda_prod,
+        "estoque_atual_prod": estoque_atual_prod,
+        "preco_custo_prod": preco_custo_prod,
+        "id_unidade": id_unidade,
+        "id_cat": id_cat,
+        "descricao_prod": descricao_prod
+    }
 
-class OperacaoCaixa:
-    def __init__(self, id_operacao, data_op_aber, valor_op_aber, data_op_fecham, valor_op_fecham, saldo_op, id_vend, id_caixa):
-        self.id_operacao = id_operacao
-        self.data_op_aber = data_op_aber
-        self.valor_op_aber = valor_op_aber
-        self.data_op_fecham = data_op_fecham
-        self.valor_op_fecham = valor_op_fecham
-        self.saldo_op = saldo_op
-        self.id_vend = id_vend
-        self.id_caixa = id_caixa
+def criar_operacao_caixa(id_operacao: int, data_op_aber: datetime | str, valor_op_aber: float, data_op_fecham: datetime | str | None, valor_op_fecham: float | None, saldo_op: float, id_vend: int, id_caixa: int) -> dict[str, Any]:
+    return {
+        "id_operacao": id_operacao,
+        "data_op_aber": data_op_aber,
+        "valor_op_aber": valor_op_aber,
+        "data_op_fecham": data_op_fecham,
+        "valor_op_fecham": valor_op_fecham,
+        "saldo_op": saldo_op,
+        "id_vend": id_vend,
+        "id_caixa": id_caixa
+    }
 
-class Pedido:
-    def __init__(self, id_pedido, valor_total_pedido, data_pedido, tipo_pedido, id_cliente, id_operacao):
-        self.id_pedido = id_pedido
-        self.valor_total_pedido = valor_total_pedido
-        self.data_pedido = data_pedido
-        self.tipo_pedido = tipo_pedido
-        self.id_cliente = id_cliente
-        self.id_operacao = id_operacao
+def criar_pedido(id_pedido: int, valor_total_pedido: float, data_pedido: datetime | str, tipo_pedido: str, id_cliente: int, id_operacao: int) -> dict[str, Any]:
+    return {
+        "id_pedido": id_pedido,
+        "valor_total_pedido": valor_total_pedido,
+        "data_pedido": data_pedido,
+        "tipo_pedido": tipo_pedido,
+        "id_cliente": id_cliente,
+        "id_operacao": id_operacao
+    }
 
-class ItemPedido:
-    def __init__(self, id_prod, id_pedido, qtd_item, preco_un, desc_item=0.0):
-        self.id_prod = id_prod
-        self.id_pedido = id_pedido
-        self.qtd_item = qtd_item
-        self.preco_un = preco_un
-        self.desc_item = desc_item
+def criar_item_pedido(id_prod: int, id_pedido: int, qtd_item: float, preco_un: float, desc_item: float = 0.0) -> dict[str, Any]:
+    return {
+        "id_prod": id_prod,
+        "id_pedido": id_pedido,
+        "qtd_item": qtd_item,
+        "preco_un": preco_un,
+        "desc_item": desc_item
+    }
         
-class Endereço:
-    def __init__(self, id_endereco, rua, numero, complemento, bairro, cidade, estado, cep):
-        self.id_endereco = id_endereco
-        self.rua = rua
-        self.numero = numero
-        self.complemento = complemento
-        self.bairro = bairro
-        self.cidade = cidade
-        self.estado = estado
-        self.cep = cep
+def criar_endereco(id_endereco: int, rua: str, numero: str, complemento: str | None, bairro: str, cidade: str, estado: str, cep: str) -> dict[str, Any]:
+    return {
+        "id_endereco": id_endereco,
+        "rua": rua,
+        # 'numero' como string, pois pode existir "S/N", "123B", etc.
+        "numero": numero, 
+        "complemento": complemento,
+        "bairro": bairro,
+        "cidade": cidade,
+        "estado": estado,
+        "cep": cep
+    }
         
-class Caixa:
-    def __init__(self, id_caixa, tipo_caixa):
-        self.id_caixa = id_caixa
-        self.tipo_caixa = tipo_caixa
+def criar_caixa(id_caixa: int, tipo_caixa: str) -> dict[str, Any]:
+    return {
+        "id_caixa": id_caixa,
+        "tipo_caixa": tipo_caixa
+    }
 
-class PerdaDeEstoque:
-    def __init__(self, id_perda, data_perda, qtd_perda, motivo_perda, id_prod):
-        self.id_perda = id_perda
-        self.data_perda = data_perda
-        self.qtd_perda = qtd_perda
-        self.motivo_perda = motivo_perda
-        self.id_prod = id_prod
+def criar_perda_estoque(id_perda: int, data_perda: date | str, qtd_perda: float, motivo_perda: str, id_prod: int) -> dict[str, Any]:
+    return {
+        "id_perda": id_perda,
+        "data_perda": data_perda,
+        "qtd_perda": qtd_perda,
+        "motivo_perda": motivo_perda,
+        "id_prod": id_prod
+    }
         
-class EntradaDeEstoque:
-    def __init__(self, id_entrada, data_entrada, qtd_entrada, id_prod, id_forn, preco_entrada):
-        self.id_entrada = id_entrada
-        self.data_entrada = data_entrada
-        self.qtd_entrada = qtd_entrada
-        self.id_prod = id_prod
-        self.preco_entrada = preco_entrada
-        self.id_forn = id_forn
+def criar_entrada_estoque(id_entrada: int, data_entrada: date | str, qtd_entrada: float, id_prod: int, id_forn: int, preco_entrada: float) -> dict[str, Any]:
+    return {
+        "id_entrada": id_entrada,
+        "data_entrada": data_entrada,
+        "qtd_entrada": qtd_entrada,
+        "id_prod": id_prod,
+        "preco_entrada": preco_entrada,
+        "id_forn": id_forn
+    }
 
