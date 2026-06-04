@@ -246,28 +246,28 @@ class OperationScreen(Screen):
             with Vertical(id="tela-deletar"):
                 yield Static("Aqui ficaria o seu formulário de cadastro...")
                 yield Button("Voltar para o Menu", id="btn-voltar", variant="error")
-                yield Button("Del Produto", id="btn-dlprod")
-                yield Button("Del Categoria", id="btn-dlcat")
-                yield Button("Del estoque", id="btn-dlestq")
-                yield Button("Del Perda estoque", id="btn-dlpestq")
-                yield Button("Del Cliente", id="btn-dlcliente")
-                yield Button("Del Fornecedor", id="btn-dlforn")
-                yield Button("Del Vendedor", id="btn-dlvend")
-                yield Button("Del Unidade", id="btn-dluni")
-                yield Button("Del Caixa", id="btn-dlcx")
+                yield Button("Del Produto", id="btn-dl-Produto")
+                yield Button("Del Categoria", id="btn-dl-Categoria")
+                yield Button("Del estoque", id="btn-dl-EntradaDeEstoque")
+                yield Button("Del Perda estoque", id="btn-dl-PerdaDeEstoque")
+                yield Button("Del Cliente", id="btn-dl-Cliente")
+                yield Button("Del Fornecedor", id="btn-dl-Fornecedor")
+                yield Button("Del Vendedor", id="btn-dl-Vendedor")
+                yield Button("Del Unidade", id="btn-dl-UnidadeMedida")
+                yield Button("Del Caixa", id="btn-dl-Caixa")
                 
             with Vertical(id="tela-update"):
                 yield Static("Aqui ficaria o seu formulário de cadastro...")
                 yield Button("Voltar para o Menu", id="btn-voltar", variant="error")
-                yield Button("Att Produto", id="btn-upprod")
-                yield Button("Att Categoria", id="btn-upcat")
-                yield Button("Att estoque", id="btn-upestq")
-                yield Button("Att Perda estoque", id="btn-uppestq")
-                yield Button("Att Cliente", id="btn-upcliente")
-                yield Button("Att Fornecedor", id="btn-upforn")
-                yield Button("Att Vendedor", id="btn-upvend")
-                yield Button("Att Unidade", id="btn-upuni")
-                yield Button("Att Caixa", id="btn-upcx")
+                yield Button("Att Produto", id="btn-up-Produto")
+                yield Button("Att Categoria", id="btn-up-Categoria")
+                yield Button("Att estoque", id="btn-up-EntradaDeEstoque")
+                yield Button("Att Perda estoque", id="btn-up-PerdaDeEstoque")
+                yield Button("Att Cliente", id="btn-up-Cliente")
+                yield Button("Att Fornecedor", id="btn-up-Fornecedor")
+                yield Button("Att Vendedor", id="btn-up-Vendedor")
+                yield Button("Att Unidade", id="btn-up-UnidadeMedida")
+                yield Button("Att Caixa", id="btn-up-Caixa")
                 
         yield Footer()
 
@@ -306,6 +306,13 @@ class OperationScreen(Screen):
         elif event.button.id[:7] == "btn-ad-":
             self.app.push_screen(FormularioModal(entities.TABELAS[event.button.id[7:]]))
 
+        elif event.button.id[:7] == "btn-up-":
+            self.app.push_screen(FormularioModal(entities.TABELAS[event.button.id[7:]]))
+
+        elif event.button.id[:7] == "btn-dl-":
+            self.app.push_screen(FormularioModal(entities.TABELAS[event.button.id[7:]]))
+
+        
 
 class ModesApp(App):
     CSS_PATH = "estilo.tcss" # Lembre-se de criar este arquivo!
