@@ -3,6 +3,7 @@ from textual.screen import Screen, ModalScreen
 from textual.widgets import Footer, Placeholder, Button, Static, DataTable, Input, Label, ContentSwitcher
 from textual.containers import Vertical, Horizontal
 import entities
+import operacoes
 '''
 # Adicionamos a Tabela 
         yield DataTable(id="minha-lista")
@@ -45,8 +46,39 @@ def on_mount(self) -> None:
             tabela.add_row(novo_id, nome, valor)
         '''
 
+class View(ModalScreen):
+    ''' 
+    TODO: acrescentar a ideia de que eu vou ter diversos tipos de formularios a partir de uma lista de atributos que eu espero receber 
+    '''
+    # 1. Construtor para receber tuplas como sendo os valores que precisamos coletar
+    def __init__(self, tabela: tuple, **kwargs):
+        super().__init__(**kwargs)
+        self.tabela = tabela
+    
+    def compose(self) -> ComposeResult:
+        yield Button("Tela Inicial", id="btn-inicial", variant="primary")
+
+        yield DataTable(id="minha-lista")
+
+    def on_mount(self) -> None:
+        lista = self.query_one("#minha-lista", DataTable)
+        
+        # 2. Define o cabeçalho (precisa bater com o que você vai pedir no SELECT)
+        colunas = entities.TABELAS[self.tabela][0]
+        lista.add_columns(*colunas)
+        
+        # 3. Chama a sua função select do banco de dados
+        # Isso vai retornar aquela lista de tuplas: [(1, 'Maçã', 5.99, 150), ...]
+        dados_banco = operacoes.select(self.tabela)
+        
+        # 4. Injeta os dados na tabela de uma vez só!
+        if dados_banco:
+            lista.add_rows(dados_banco)
 
 
+    def on_button_pressed(self, event: Button.Pressed) -> None:
+        if event.button.id == "btn-inicial":
+            self.app.switch_mode("inicial")
 # POPUP para receber valores
 class FormularioModal(ModalScreen):
     ''' 
@@ -71,18 +103,18 @@ class FormularioModal(ModalScreen):
                 yield Button("Salvar", id="btn-salvar", variant="success")
                 yield Button("Cancelar", id="btn-cancelar", variant="error")
 
-    def on_button_pressed(self, event: Button.Pressed) -> None:
+    # def on_button_pressed(self, event: Button.Pressed) -> None:
         
-        if event.button.id == "btn-cancelar":
-            # Fecha a tela enviando 'None' 
-            self.dismiss(None) 
+    #     if event.button.id == "btn-cancelar":
+    #         # Fecha a tela enviando 'None' 
+    #         self.dismiss(None) 
             
-        elif event.button.id == "btn-salvar":
-            # Captura o texto digitado nos Inputs
-            size = len(self.dados_iniciais)
-            values = {}
+    #     elif event.button.id == "btn-salvar":
+    #         # Captura o texto digitado nos Inputs
+    #         size = len(self.dados_iniciais)
+    #         values = {}
 
-def on_button_pressed(self, event: Button.Pressed) -> None:
+    def on_button_pressed(self, event: Button.Pressed) -> None:
         
         if event.button.id == "btn-cancelar":
             self.dismiss(None) 
@@ -207,7 +239,7 @@ class ViewScreen(Screen):
         # yield Button("Endereço Vendedores", id="btn-vw-endvend")
         yield Button("Unidades", id="btn-vw-UnidadeMedida")
         yield Button("Produtos", id="btn-vw-Produto")
-        yield Button("Categorias", id="btn-vw-Categoria")
+        yield Button("Categorias", id="btn-vw-CATEGORIA")
         yield Button("Entrada estoque", id="btn-vw-EntradaDeEstoque")
         yield Button("Perda estoque", id="btn-vw-PerdaDeEstoque")
         yield Button("Vendas", id="btn-vw-Pedido")
@@ -221,6 +253,11 @@ class ViewScreen(Screen):
     def on_button_pressed(self, event: Button.Pressed) -> None:
         if event.button.id == "btn-inicial":
             self.app.switch_mode("inicial")
+
+        elif event.button.id[:7] == "btn-vw-":
+            self.app.push_screen(View(event.button.id[7:]))
+
+
 
 class OperationScreen(Screen):
     def __init__(self, **kwargs):
@@ -271,28 +308,28 @@ class OperationScreen(Screen):
             with Vertical(id="tela-deletar"):
                 yield Static("Aqui ficaria o seu formulário de cadastro...")
                 yield Button("Voltar para o Menu", id="btn-voltar", variant="error")
-                yield Button("Del Produto", id="btn-dlprod")
-                yield Button("Del Categoria", id="btn-dlcat")
-                yield Button("Del estoque", id="btn-dlestq")
-                yield Button("Del Perda estoque", id="btn-dlpestq")
-                yield Button("Del Cliente", id="btn-dlcliente")
-                yield Button("Del Fornecedor", id="btn-dlforn")
-                yield Button("Del Vendedor", id="btn-dlvend")
-                yield Button("Del Unidade", id="btn-dluni")
-                yield Button("Del Caixa", id="btn-dlcx")
+                yield Button("Del Produto", id="btn-dl-Produto")
+                yield Button("Del Categoria", id="btn-dl-Categoria")
+                yield Button("Del estoque", id="btn-dl-EntradaDeEstoque")
+                yield Button("Del Perda estoque", id="btn-dl-PerdaDeEstoque")
+                yield Button("Del Cliente", id="btn-dl-Cliente")
+                yield Button("Del Fornecedor", id="btn-dl-Fornecedor")
+                yield Button("Del Vendedor", id="btn-dl-Vendedor")
+                yield Button("Del Unidade", id="btn-dl-UnidadeMedida")
+                yield Button("Del Caixa", id="btn-dl-Caixa")
                 
             with Vertical(id="tela-update"):
                 yield Static("Aqui ficaria o seu formulário de cadastro...")
                 yield Button("Voltar para o Menu", id="btn-voltar", variant="error")
-                yield Button("Att Produto", id="btn-upprod")
-                yield Button("Att Categoria", id="btn-upcat")
-                yield Button("Att estoque", id="btn-upestq")
-                yield Button("Att Perda estoque", id="btn-uppestq")
-                yield Button("Att Cliente", id="btn-upcliente")
-                yield Button("Att Fornecedor", id="btn-upforn")
-                yield Button("Att Vendedor", id="btn-upvend")
-                yield Button("Att Unidade", id="btn-upuni")
-                yield Button("Att Caixa", id="btn-upcx")
+                yield Button("Att Produto", id="btn-up-Produto")
+                yield Button("Att Categoria", id="btn-up-Categoria")
+                yield Button("Att estoque", id="btn-up-EntradaDeEstoque")
+                yield Button("Att Perda estoque", id="btn-up-PerdaDeEstoque")
+                yield Button("Att Cliente", id="btn-up-Cliente")
+                yield Button("Att Fornecedor", id="btn-up-Fornecedor")
+                yield Button("Att Vendedor", id="btn-up-Vendedor")
+                yield Button("Att Unidade", id="btn-up-UnidadeMedida")
+                yield Button("Att Caixa", id="btn-up-Caixa")
                 
         yield Footer()
 
@@ -331,6 +368,13 @@ class OperationScreen(Screen):
         elif event.button.id[:7] == "btn-ad-":
             self.app.push_screen(FormularioModal(entities.TABELAS[event.button.id[7:]]))
 
+        elif event.button.id[:7] == "btn-up-":
+            self.app.push_screen(FormularioModal(entities.TABELAS[event.button.id[7:]]))
+
+        elif event.button.id[:7] == "btn-dl-":
+            self.app.push_screen(FormularioModal(entities.TABELAS[event.button.id[7:]]))
+
+        
 
 class ModesApp(App):
     CSS_PATH = "estilo.tcss" # Lembre-se de criar este arquivo!
