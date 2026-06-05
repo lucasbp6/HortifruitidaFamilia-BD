@@ -1,108 +1,260 @@
 from textual.app import App, ComposeResult
 from textual.screen import Screen, ModalScreen
-from textual.widgets import Footer, Placeholder, Button, Static, DataTable, Input, Label, ContentSwitcher
+from textual.widgets import Footer, Placeholder, Button, Static, DataTable, Input, Label, ContentSwitcher, Select
 from textual.containers import Vertical, Horizontal
+from textual import on
 import entities
 import operacoes
 import datetime
-'''
-# Adicionamos a Tabela 
-        yield DataTable(id="minha-lista")
-
-        # Chama a tabela para carregar os dados nela ( ver como fazer isso com o banco de dados na hora de juntar)
-def on_mount(self) -> None:
-        
-        tabela = self.query_one(DataTable)
-        
-        # Muda o cursor para selecionar a linha inteira em vez de célula por célula
-        tabela.cursor_type = "row" 
-        
-        # Adiciona colunas
-        tabela.add_columns("ID", "Descrição", "Status")
-        
-        # Adiciona várias linhas na nossa lista
-        tabela.add_rows([
-            ("001", "Teclado Mecânico", "Ativo"),
-            ("002", "Mouse Sem Fio", "Em Estoque"),
-            ("003", "Monitor 24 polegadas", "Falta"),
-            ("004", "Cabo HDMI", "Ativo"),
-        ])
-
-        # Não deve ser usado na nossa implementação
-
-        def adicionar_na_tabela(self, dados: tuple | None) -> None:
-        """Esta função é chamada automaticamente quando o Modal usa 'dismiss()'."""
-        # Se o usuário clicou em cancelar, os dados virão como 'None'
-        if dados is not None:
-            # Desempacota a tupla que enviamos do modal
-            nome, valor = dados
-            
-            # Pega a tabela
-            tabela = self.query_one(DataTable)
-            
-            # Gera um ID automático baseado na quantidade de linhas atuais
-            novo_id = f"{len(tabela.rows) + 1:03}"
-            
-            # Adiciona a nova linha na tabela!
-            tabela.add_row(novo_id, nome, valor)
-        '''
 
 class View(ModalScreen):
-    ''' 
-    TODO: acrescentar a ideia de que eu vou ter diversos tipos de formularios a partir de uma lista de atributos que eu espero receber 
-    '''
-    # 1. Construtor para receber tuplas como sendo os valores que precisamos coletar
+   
+    DEFAULT_CSS = """
+    View {
+        background: black;
+        padding: 1;
+    }
+    #area-filtro {
+        layout: horizontal;
+        height: auto;
+        margin-bottom: 1;
+    }
+    #select-coluna {
+        width: 30%;
+        margin-right: 1;
+    }
+    #input-filtro {
+        width: 70%;
+    }
+    """
+
     def __init__(self, tabela: tuple, **kwargs):
         super().__init__(**kwargs)
         self.tabela = tabela
+        self.dados_originais = []
+        self.colunas = []
     
     def compose(self) -> ComposeResult:
-        yield Button("Tela Inicial", id="btn-inicial", variant="primary")
+        yield Button("Voltar", id="btn-voltar", variant="error")
+        
+        # Container horizontal para os filtros
+        with Horizontal(id="area-filtro"):
+            yield Select([], id="select-coluna", prompt="Filtrar por qual coluna?")
+            yield Input(placeholder="Digite o valor para buscar...", id="input-filtro")
+        
+        yield DataTable(id="minha-lista")
+
+    def on_mount(self) -> None:
+        lista = self.query_one("#minha-lista", DataTable)
+        
+        # Guardamos as colunas na classe para usar no filtro depois
+        self.colunas = entities.TABELAS[self.tabela][0]
+        lista.add_columns(*self.colunas)
+        
+        # Populamos o Select dinamicamente com os nomes das colunas
+        # O Select exige uma lista de tuplas: (Rótulo que aparece, Valor interno)
+        opcoes_select = [(coluna, str(indice)) for indice, coluna in enumerate(self.colunas)]
+        select = self.query_one("#select-coluna", Select)
+        select.set_options(opcoes_select)
+        
+        # Buscamos os dados do banco
+        self.dados_originais = operacoes.select(self.tabela)
+        
+        if self.dados_originais:
+            lista.add_rows(self.dados_originais)
+
+    # Escutamos as mudanças TANTO no input QUANTO no select
+    @on(Input.Changed, "#input-filtro")
+    @on(Select.Changed, "#select-coluna")
+    def atualizar_filtro(self) -> None:
+        input_widget = self.query_one("#input-filtro", Input)
+        select_widget = self.query_one("#select-coluna", Select)
+        lista = self.query_one("#minha-lista", DataTable)
+        
+        termo_busca = input_widget.value.lower()
+        indice_coluna = select_widget.value
+        
+        lista.clear()
+        
+        # Se o usuário não digitou nada ou ainda não escolheu a coluna, mostra tudo
+        if not termo_busca or indice_coluna == Select.BLANK:
+            lista.add_rows(self.dados_originais)
+            return
+        
+        # Converte o valor do Select de volta para inteiro
+        idx = int(indice_coluna)
+        dados_filtrados = []
+        
+        # 5. Filtra olhando apenas para a coluna específica (pelo índice)
+        for linha in self.dados_originais:
+            if termo_busca in str(linha[idx]).lower():
+                dados_filtrados.append(linha)
+                
+        lista.add_rows(dados_filtrados)
+
+    def on_button_pressed(self, event: Button.Pressed) -> None:
+        if event.button.id == "btn-voltar":
+            self.app.pop_screen()
+
+class DeleteByIdView(ModalScreen):
+   
+    DEFAULT_CSS = """
+    DeleteByIdView {
+        background: black;
+        padding: 1;
+    }
+    #area-filtro, #area-deletar {
+        layout: horizontal;
+        height: auto;
+        margin-bottom: 1;
+    }
+    #select-coluna, #input-filtro, #input-deletar-id {
+        margin-right: 1;
+        background: #2a2a2a; /* um pouco mais claro que o fundo */
+        color: #dcdcdc;
+    }
+    #select-coluna {
+        width: 30%;
+    }
+    #input-filtro {
+        width: 70%;
+    }
+    #input-deletar-id {
+        width: 60%;
+    }
+    #btn-deletar-confirmar {
+        width: 40%;
+    }
+    """
+
+    def __init__(self, tabela: str, **kwargs):
+        super().__init__(**kwargs)
+        self.tabela = tabela
+        self.dados_originais = []
+        self.colunas = []
+    
+    def compose(self) -> ComposeResult:
+        # Botão voltar idêntico à sua imagem
+        yield Button("Voltar", id="btn-voltar", variant="error")
+        
+        # Área de filtro existente idêntica à sua imagem
+        with Horizontal(id="area-filtro"):
+            yield Select([], id="select-coluna", prompt="Filtrar por qual coluna?")
+            yield Input(placeholder="Digite o valor para buscar...", id="input-filtro")
+        
+        # NOVA ÁREA DE DELEÇÃO POR ID
+        with Horizontal(id="area-deletar"):
+            yield Button("Confirmar Deleção", id="btn-deletar-confirmar", variant="error")
 
         yield DataTable(id="minha-lista")
 
     def on_mount(self) -> None:
         lista = self.query_one("#minha-lista", DataTable)
         
-        # 2. Define o cabeçalho (precisa bater com o que você vai pedir no SELECT)
-        colunas = entities.TABELAS[self.tabela][0]
-        lista.add_columns(*colunas)
-        
-        # 3. Chama a sua função select do banco de dados
-        # Isso vai retornar aquela lista de tuplas: [(1, 'Maçã', 5.99, 150), ...]
-        dados_banco = operacoes.select(self.tabela)
-        
-        # 4. Injeta os dados na tabela de uma vez só!
-        if dados_banco:
-            lista.add_rows(dados_banco)
 
+        self.colunas = entities.TABELAS[self.tabela][0] # Exemplo baseado no seu código anterior
+
+        
+        # Popula o Select para o filtro
+        opcoes_select = [(coluna, str(indice)) for indice, coluna in enumerate(self.colunas)]
+        select = self.query_one("#select-coluna", Select)
+        select.set_options(opcoes_select)
+        
+        # Chama a função para popular os dados
+        self.carregar_dados()
+
+    def carregar_dados(self) -> None:
+        """Busca os dados do banco e popula a tabela, centralizando o carregamento."""
+        lista = self.query_one("#minha-lista", DataTable)
+        lista.clear() # Limpa as linhas atuais
+        
+        self.dados_originais = operacoes.select(self.tabela)
+        
+        if self.dados_originais:
+            lista.add_rows(self.dados_originais)
+
+    # === FILTRO REATIVO EXISTENTE ===
+    @on(Input.Changed, "#input-filtro")
+    @on(Select.Changed, "#select-coluna")
+    def atualizar_filtro(self) -> None:
+        input_widget = self.query_one("#input-filtro", Input)
+        select_widget = self.query_one("#select-coluna", Select)
+        lista = self.query_one("#minha-lista", DataTable)
+        
+        termo_busca = input_widget.value.lower()
+        indice_coluna = select_widget.value
+        
+        lista.clear()
+        
+        if not termo_busca or indice_coluna == Select.BLANK:
+            lista.add_rows(self.dados_originais)
+            return
+        
+        idx = int(indice_coluna)
+        dados_filtrados = [linha for linha in self.dados_originais if termo_busca in str(linha[idx]).lower()]
+        lista.add_rows(dados_filtrados)
+
+    # === NOVA LÓGICA DE DELEÇÃO POR ID ===
+    @on(Button.Pressed, "#btn-deletar-confirmar")
+    def deletar_por_id(self, event: Button.Pressed) -> None:
+        input_id = self.query_one("#input-deletar-id", Input)
+        id_registro = input_id.value.strip()
+
+        # Validação simples para ver se o usuário digitou algo
+        if not id_registro:
+            return
+
+        try:
+            # Tenta converter para inteiro (assumindo IDs numéricos)
+            id_num = int(id_registro)
+        except ValueError:
+             input_id.value = "" # limpa o campo se não for um número válido
+             return
+
+
+        nome_coluna_id = self.colunas[0]
+
+        # 2. Monta o dicionário 'where' que a sua função espera
+        # Exemplo do que isso vai gerar: {"IDCat": 1}
+        condicao_where = {nome_coluna_id: id_num}
+
+        # 3. Chama a função de apagar do banco de dados passando o dicionário
+        linhas_afetadas = operacoes.delete(self.tabela, condicao_where)
+        
+        # 4. Atualiza a tela e limpa o input
+        self.carregar_dados()
+        input_id.value = ""
+        
+        # Opcional: Você pode usar a variável `linhas_afetadas` retornada pela sua função 
+        # para mostrar uma notificação de sucesso ou erro (ex: self.app.notify("Deletado!")) se quiser!
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
-        if event.button.id == "btn-inicial":
-            self.app.switch_mode("inicial")
+        if event.button.id == "btn-voltar":
+            self.app.pop_screen()
+        
 # POPUP para receber valores
 
 class FormularioModal(ModalScreen):
-    ''' 
-    TODO: acrescentar a ideia de que eu vou ter diversos tipos de formularios a partir de uma lista de atributos que eu espero receber 
-    '''
-    # 1. Construtor para receber tuplas como sendo os valores que precisamos coletar
-    def __init__(self, dados_iniciais: tuple, **kwargs):
+
+    # Agora recebemos o nome da tabela e a ação que será feita
+    def __init__(self, tabela_nome: str, acao: str, dados_iniciais: tuple, **kwargs):
         super().__init__(**kwargs)
+        self.tabela_nome = tabela_nome
+        self.acao = acao
         self.dados_iniciais = dados_iniciais[0]
         self.tipos = dados_iniciais[1]
     
     def compose(self) -> ComposeResult:
         with Vertical(id="caixa-formulario"):
-            yield Label("Cadastrar Novo Item", id="titulo-form")
+            # O título muda dinamicamente
+            yield Label(f"{self.acao.capitalize()} - {self.tabela_nome}", id="titulo-form")
             
             # Campos de preenchimento
             for i in range(len(self.dados_iniciais)):
                 yield Input(placeholder=f"Digite o {self.dados_iniciais[i]}...", id=f"input-{i}")
             
-            
             with Horizontal(id="botoes-form"):
-                yield Button("Salvar", id="btn-salvar", variant="success")
+                yield Button("Confirmar", id="btn-salvar", variant="success")
                 yield Button("Cancelar", id="btn-cancelar", variant="error")
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
@@ -113,10 +265,11 @@ class FormularioModal(ModalScreen):
         elif event.button.id == "btn-salvar":
             valores_validados = {}
 
+            # --- SUA LÓGICA DE VALIDAÇÃO CONTINUA AQUI ---
             for i, (coluna, tipo_esperado) in enumerate(zip(self.dados_iniciais, self.tipos)):
                 valor_texto = self.query_one(f"#input-{i}", Input).value.strip()
                 
-                if not valor_texto: # Verifica se o campo está vazio
+                if not valor_texto:
                     if "None" in tipo_esperado:
                         valores_validados[coluna] = None
                         continue 
@@ -126,8 +279,8 @@ class FormularioModal(ModalScreen):
 
                 tipo_full = tipo_esperado.split(" | ")[0].strip() 
                 if "(" in tipo_full:
-                    tipo_base = tipo_full.split("(")[0] # Pega "str" ou "char"
-                    tamanho_limite = int(tipo_full.split("(")[1].replace(")", "")) # Pega o número dentro dos parênteses
+                    tipo_base = tipo_full.split("(")[0]
+                    tamanho_limite = int(tipo_full.split("(")[1].replace(")", ""))
                 else:
                     tipo_base = tipo_full
                     tamanho_limite = None
@@ -169,10 +322,33 @@ class FormularioModal(ModalScreen):
                         return
                     
                 valores_validados[coluna] = valor_texto
+
+            # --- NOVA LÓGICA DE BANCO DE DADOS MOVIDA PARA CÁ ---
+            try:
+                if self.acao == "inserir":
+                    # Ajuste aqui conforme a assinatura da sua função operacoes.insert
+                    # Se ela espera uma lista de dicionários, coloque [valores_validados]
+                    operacoes.insert([self.tabela_nome], [valores_validados], schema="hortifruti")
+                    self.app.notify(f"Sucesso ao inserir em {self.tabela_nome}!", severity="success")
+
+                elif self.acao == "atualizar":
+                    # Chamada fictícia, ajuste conforme o seu arquivo operacoes.py
+                    operacoes.update(self.tabela_nome, valores_validados)
+                    self.app.notify(f"Sucesso ao atualizar {self.tabela_nome}!", severity="success")
+
+                elif self.acao == "deletar":
+                    # Chamada fictícia, ajuste conforme o seu arquivo operacoes.py
+                    # Geralmente delete precisa apenas da chave primária
+                    operacoes.delete(self.tabela_nome, valores_validados)
+                    self.app.notify(f"Sucesso ao deletar de {self.tabela_nome}!", severity="success")
                 
-            self.dismiss(valores_validados)
+                self.dismiss(valores_validados) # Fecha o modal após sucesso
+
+            except Exception as e:
+                print(f"Erro no banco: {e}")
+                self.app.notify(f"Erro no banco: {e}", severity="error", timeout=6)
             
-# --- TELA INICIAL ---
+# TELA INICIAL 
 class InitialScreen(Screen):
     def compose(self) -> ComposeResult:
 
@@ -209,24 +385,20 @@ class ViewScreen(Screen):
 
         yield Button("Tela Inicial", id="btn-inicial", variant="primary")
 
-        #Seleção de qual tabela vizualizar, fazer com que eles chamem a função correta
-        #talvez mudar o id para o nome da tabela
-        yield Button("Clientes", id="btn-vw-Cliente")
-        yield Button("Fornecedores", id="btn-vw-Fornecedor")
-        yield Button("Vendedores", id="btn-vw-Vendedor")
-        yield Button("Endereço", id="btn-vw-Endereco")
-        # yield Button("Endereço fornecedores", id="btn-vw-endforn")
-        # yield Button("Endereço Vendedores", id="btn-vw-endvend")
-        yield Button("Unidades", id="btn-vw-UnidadeMedida")
-        yield Button("Produtos", id="btn-vw-Produto")
+        # Seleção de qual tabela vizualizar, fazer com que eles chamem a função correta
+
+        yield Button("Clientes", id="btn-vw-CLIENTE")
+        yield Button("Fornecedores", id="btn-vw-FORNECEDOR")
+        yield Button("Vendedores", id="btn-vw-VENDEDOR")
+        yield Button("Endereço", id="btn-vw-ENDERECO")
+        yield Button("Unidades", id="btn-vw-UNIDADEMEDIDA")
+        yield Button("Produtos", id="btn-vw-PRODUTO")
         yield Button("Categorias", id="btn-vw-CATEGORIA")
-        yield Button("Entrada estoque", id="btn-vw-EntradaDeEstoque")
-        yield Button("Perda estoque", id="btn-vw-PerdaDeEstoque")
-        yield Button("Vendas", id="btn-vw-Pedido")
-        yield Button("Operações", id="btn-vw-OperacaoCaixa")
-        yield Button("Caixas", id="btn-vw-Caixa")
-
-
+        yield Button("Entrada estoque", id="btn-vw-ENTRADAESTOQUE")
+        yield Button("Perda estoque", id="btn-vw-PERDAESTOQUE")
+        yield Button("Vendas", id="btn-vw-PEDIDO")
+        yield Button("Operações", id="btn-vw-OPERACAOCAIXA")
+        yield Button("Caixas", id="btn-vw-CAIXA")
 
         yield Footer()
 
@@ -261,8 +433,8 @@ class OperationScreen(Screen):
                 yield Button("Voltar para o Menu", id="btn-voltar", variant="error")
                 yield Button("Add Produto", id="btn-ad-PRODUTO")
                 yield Button("Add Categoria", id="btn-ad-CATEGORIA")
-                yield Button("Add estoque", id="btn-ad-ENTRADADEESTOQUE")
-                yield Button("Add Perda estoque", id="btn-ad-PERDADEESTOQUE")
+                yield Button("Add estoque", id="btn-ad-ENTRADAESTOQUE")
+                yield Button("Add Perda estoque", id="btn-ad-PERDAESTOQUE")
                 yield Button("Add Cliente", id="btn-ad-CLIENTE")
                 yield Button("Add Fornecedor", id="btn-ad-FORNECEDOR")
                 yield Button("Add Vendedor", id="btn-ad-VENDEDOR")
@@ -288,28 +460,28 @@ class OperationScreen(Screen):
             with Vertical(id="tela-deletar"):
                 yield Static("Aqui ficaria o seu formulário de cadastro...")
                 yield Button("Voltar para o Menu", id="btn-voltar", variant="error")
-                yield Button("Del Produto", id="btn-dl-Produto")
+                yield Button("Del Produto", id="btn-dl-PRODUTO")
                 yield Button("Del Categoria", id="btn-dl-CATEGORIA")
-                yield Button("Del estoque", id="btn-dl-EntradaDeEstoque")
-                yield Button("Del Perda estoque", id="btn-dl-PerdaDeEstoque")
-                yield Button("Del Cliente", id="btn-dl-Cliente")
-                yield Button("Del Fornecedor", id="btn-dl-Fornecedor")
-                yield Button("Del Vendedor", id="btn-dl-Vendedor")
-                yield Button("Del Unidade", id="btn-dl-UnidadeMedida")
-                yield Button("Del Caixa", id="btn-dl-Caixa")
+                yield Button("Del estoque", id="btn-dl-ENTRADAESTOQUE")
+                yield Button("Del Perda estoque", id="btn-dl-PERDAESTOQUE")
+                yield Button("Del Cliente", id="btn-dl-CLIENTE")
+                yield Button("Del Fornecedor", id="btn-dl-FORNECEDOR")
+                yield Button("Del Vendedor", id="btn-dl-VENDEDOR")
+                yield Button("Del Unidade", id="btn-dl-UNIDADEMEDIDA")
+                yield Button("Del Caixa", id="btn-dl-CAIXA")
                 
             with Vertical(id="tela-update"):
                 yield Static("Aqui ficaria o seu formulário de cadastro...")
                 yield Button("Voltar para o Menu", id="btn-voltar", variant="error")
-                yield Button("Att Produto", id="btn-up-Produto")
-                yield Button("Att Categoria", id="btn-up-Categoria")
-                yield Button("Att estoque", id="btn-up-EntradaDeEstoque")
-                yield Button("Att Perda estoque", id="btn-up-PerdaDeEstoque")
-                yield Button("Att Cliente", id="btn-up-Cliente")
-                yield Button("Att Fornecedor", id="btn-up-Fornecedor")
-                yield Button("Att Vendedor", id="btn-up-Vendedor")
-                yield Button("Att Unidade", id="btn-up-UnidadeMedida")
-                yield Button("Att Caixa", id="btn-up-Caixa")
+                yield Button("Att Produto", id="btn-up-PRODUTO")
+                yield Button("Att Categoria", id="btn-up-CATEGORIA")
+                yield Button("Att estoque", id="btn-up-ENTRADAESTOQUE")
+                yield Button("Att Perda estoque", id="btn-up-PERDAESTOQUE")
+                yield Button("Att Cliente", id="btn-up-CLIENTE")
+                yield Button("Att Fornecedor", id="btn-up-FORNECEDOR")
+                yield Button("Att Vendedor", id="btn-up-VENDEDOR")
+                yield Button("Att Unidade", id="btn-up-UNIDADEMEDIDA")
+                yield Button("Att Caixa", id="btn-up-CAIXA")
                 
         yield Footer()
 
@@ -347,28 +519,16 @@ class OperationScreen(Screen):
 
         elif event.button.id[:7] == "btn-ad-":
             tabela_nome = event.button.id[7:] 
-                         
-            def salvar_no_banco(dados_digitados):
-                if dados_digitados is not None:
-                    try:
-                        # O modal fechou e mandou os dados. Vamos tentar salvar:
-                        operacoes.insert([tabela_nome], [dados_digitados[0]], schema="public")
-                        self.app.notify(f"Sucesso ao salvar em {tabela_nome}!", severity="success")
-                        
-                    except Exception as e:
-                        # 1. DEU ERRO! Avisamos o usuário do problema
-                        print(f"Erro ao salvar no banco: {e}")
-                        self.app.notify(f"Erro no banco: {e}", severity="error", timeout=6)
-                    
-            # Abertura inicial do modal (valores_preenchidos estará vazio)
-            self.app.push_screen(FormularioModal(entities.TABELAS[tabela_nome]), callback=salvar_no_banco)
+            self.app.push_screen(FormularioModal(tabela_nome, "inserir", entities.TABELAS[tabela_nome]))
 
         elif event.button.id[:7] == "btn-up-":
-            self.app.push_screen(FormularioModal(entities.TABELAS[event.button.id[7:]]))
+            tabela_nome = event.button.id[7:]
+            self.app.push_screen(FormularioModal(tabela_nome, "atualizar", entities.TABELAS[tabela_nome]))
 
         elif event.button.id[:7] == "btn-dl-":
-            self.app.push_screen(FormularioModal(entities.TABELAS[event.button.id[7:]]))
-
+            tabela_nome = event.button.id[7:] 
+            # Empurra a nova tela de visualização com deletar por ID
+            self.app.push_screen(DeleteByIdView(tabela_nome))
    
 
 class ModesApp(App):
