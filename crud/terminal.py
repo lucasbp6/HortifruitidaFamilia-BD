@@ -4,6 +4,7 @@ from textual.widgets import Footer, Placeholder, Button, Static, DataTable, Inpu
 from textual.containers import Vertical, Horizontal
 import entities
 import operacoes
+import datetime
 '''
 # Adicionamos a Tabela 
         yield DataTable(id="minha-lista")
@@ -80,6 +81,7 @@ class View(ModalScreen):
         if event.button.id == "btn-inicial":
             self.app.switch_mode("inicial")
 # POPUP para receber valores
+
 class FormularioModal(ModalScreen):
     ''' 
     TODO: acrescentar a ideia de que eu vou ter diversos tipos de formularios a partir de uma lista de atributos que eu espero receber 
@@ -103,17 +105,6 @@ class FormularioModal(ModalScreen):
                 yield Button("Salvar", id="btn-salvar", variant="success")
                 yield Button("Cancelar", id="btn-cancelar", variant="error")
 
-    # def on_button_pressed(self, event: Button.Pressed) -> None:
-        
-    #     if event.button.id == "btn-cancelar":
-    #         # Fecha a tela enviando 'None' 
-    #         self.dismiss(None) 
-            
-    #     elif event.button.id == "btn-salvar":
-    #         # Captura o texto digitado nos Inputs
-    #         size = len(self.dados_iniciais)
-    #         values = {}
-
     def on_button_pressed(self, event: Button.Pressed) -> None:
         
         if event.button.id == "btn-cancelar":
@@ -122,12 +113,10 @@ class FormularioModal(ModalScreen):
         elif event.button.id == "btn-salvar":
             valores_validados = {}
 
-            # Varredura de validação
             for i, (coluna, tipo_esperado) in enumerate(zip(self.dados_iniciais, self.tipos)):
                 valor_texto = self.query_one(f"#input-{i}", Input).value.strip()
                 
-                # 1. VERIFICAÇÃO DE CAMPO VAZIO
-                if not valor_texto:
+                if not valor_texto: # Verifica se o campo está vazio
                     if "None" in tipo_esperado:
                         valores_validados[coluna] = None
                         continue 
@@ -135,20 +124,14 @@ class FormularioModal(ModalScreen):
                         self.app.notify(f"O campo '{coluna}' é obrigatório!", severity="error")
                         return 
 
-                # 2. SEPARAÇÃO DO TIPO E DO TAMANHO
-                # Pega a parte antes do " | None" (se houver)
                 tipo_full = tipo_esperado.split(" | ")[0].strip() 
-                
-                # Lógica para extrair o limite dentro dos parênteses
                 if "(" in tipo_full:
                     tipo_base = tipo_full.split("(")[0] # Pega "str" ou "char"
-                    # Extrai o número e converte para inteiro
-                    tamanho_limite = int(tipo_full.split("(")[1].replace(")", "")) 
+                    tamanho_limite = int(tipo_full.split("(")[1].replace(")", "")) # Pega o número dentro dos parênteses
                 else:
                     tipo_base = tipo_full
                     tamanho_limite = None
 
-                # 3. VERIFICAÇÕES DE TAMANHO (A nova barreira!)
                 if tipo_base == "str" and tamanho_limite is not None:
                     if len(valor_texto) > tamanho_limite:
                         self.app.notify(f"O campo '{coluna}' aceita no MÁXIMO {tamanho_limite} caracteres. Você digitou {len(valor_texto)}.", severity="error")
@@ -159,7 +142,6 @@ class FormularioModal(ModalScreen):
                         self.app.notify(f"O campo '{coluna}' precisa ter EXATOS {tamanho_limite} caracteres. Faltam traços/pontos?", severity="error")
                         return
 
-                # 4. VERIFICAÇÃO ESTRITA DE TIPAGEM (A barreira antiga, mantida)
                 if tipo_base == "int":
                     if not valor_texto.isdigit():
                         self.app.notify(f"O campo '{coluna}' aceita APENAS números inteiros.", severity="error")
@@ -185,11 +167,9 @@ class FormularioModal(ModalScreen):
                     except ValueError:
                         self.app.notify(f"Data/Hora inválida em '{coluna}'.", severity="error")
                         return
-
-                # 5. SALVAMENTO ORIGINAL
+                    
                 valores_validados[coluna] = valor_texto
-            
-            # Fecha a tela enviando os dados limpos e validados
+                
             self.dismiss(valores_validados)
             
 # --- TELA INICIAL ---
@@ -207,7 +187,7 @@ class InitialScreen(Screen):
         yield Static(LOGO_HORTIFRUTI, classes="titulo-tela")
         
         
-        # 3. Adicionamos os botões (um para o popup, outro para mudar de tela)
+        # Adicionamos os botões (um para o popup, outro para mudar de tela)
         yield Button("Operar", id="btn-operar", variant="primary")
         yield Button("Visualizar dados", id="btn-vizualizar", variant="primary")
         yield Footer()
@@ -220,7 +200,7 @@ class InitialScreen(Screen):
         elif event.button.id == "btn-vizualizar":
             self.app.switch_mode("view")
             # Abre o popup e enviar a função que vai receber os valores
-            #self.app.push_screen(FormularioModal(("basta", "cansei")), self.adicionar_na_tabela)
+            # self.app.push_screen(FormularioModal(("basta", "cansei")), self.adicionar_na_tabela)
             
 
 
@@ -277,18 +257,18 @@ class OperationScreen(Screen):
 
             # VISÃO 2: Tela de Cadastro
             with Vertical(id="tela-cadastro"):
-                yield Static("Aqui ficaria o seu formulário de cadastro...")
+                yield Static("Escolha o que deseja cadastrar:")
                 yield Button("Voltar para o Menu", id="btn-voltar", variant="error")
-                yield Button("Add Produto", id="btn-ad-Produto")
-                yield Button("Add Categoria", id="btn-ad-Categoria")
-                yield Button("Add estoque", id="btn-ad-EntradaDeEstoque")
-                yield Button("Add Perda estoque", id="btn-ad-PerdaDeEstoque")
-                yield Button("Add Cliente", id="btn-ad-Cliente")
-                yield Button("Add Fornecedor", id="btn-ad-Fornecedor")
-                yield Button("Add Vendedor", id="btn-ad-Vendedor")
-                yield Button("Add Unidade", id="btn-ad-UnidadeMedida")
-                yield Button("Add Caixa", id="btn-ad-Caixa")
-                yield Button("Add Endereco", id="btn-ad-Endereco")
+                yield Button("Add Produto", id="btn-ad-PRODUTO")
+                yield Button("Add Categoria", id="btn-ad-CATEGORIA")
+                yield Button("Add estoque", id="btn-ad-ENTRADADEESTOQUE")
+                yield Button("Add Perda estoque", id="btn-ad-PERDADEESTOQUE")
+                yield Button("Add Cliente", id="btn-ad-CLIENTE")
+                yield Button("Add Fornecedor", id="btn-ad-FORNECEDOR")
+                yield Button("Add Vendedor", id="btn-ad-VENDEDOR")
+                yield Button("Add Unidade", id="btn-ad-UNIDADEMEDIDA")
+                yield Button("Add Caixa", id="btn-ad-CAIXA")
+                yield Button("Add Endereco", id="btn-ad-ENDERECO")
 
 
 
@@ -309,7 +289,7 @@ class OperationScreen(Screen):
                 yield Static("Aqui ficaria o seu formulário de cadastro...")
                 yield Button("Voltar para o Menu", id="btn-voltar", variant="error")
                 yield Button("Del Produto", id="btn-dl-Produto")
-                yield Button("Del Categoria", id="btn-dl-Categoria")
+                yield Button("Del Categoria", id="btn-dl-CATEGORIA")
                 yield Button("Del estoque", id="btn-dl-EntradaDeEstoque")
                 yield Button("Del Perda estoque", id="btn-dl-PerdaDeEstoque")
                 yield Button("Del Cliente", id="btn-dl-Cliente")
@@ -366,7 +346,22 @@ class OperationScreen(Screen):
             switcher.current = "tela-update"
 
         elif event.button.id[:7] == "btn-ad-":
-            self.app.push_screen(FormularioModal(entities.TABELAS[event.button.id[7:]]))
+            tabela_nome = event.button.id[7:] 
+                         
+            def salvar_no_banco(dados_digitados):
+                if dados_digitados is not None:
+                    try:
+                        # O modal fechou e mandou os dados. Vamos tentar salvar:
+                        operacoes.insert([tabela_nome], [dados_digitados[0]], schema="public")
+                        self.app.notify(f"Sucesso ao salvar em {tabela_nome}!", severity="success")
+                        
+                    except Exception as e:
+                        # 1. DEU ERRO! Avisamos o usuário do problema
+                        print(f"Erro ao salvar no banco: {e}")
+                        self.app.notify(f"Erro no banco: {e}", severity="error", timeout=6)
+                    
+            # Abertura inicial do modal (valores_preenchidos estará vazio)
+            self.app.push_screen(FormularioModal(entities.TABELAS[tabela_nome]), callback=salvar_no_banco)
 
         elif event.button.id[:7] == "btn-up-":
             self.app.push_screen(FormularioModal(entities.TABELAS[event.button.id[7:]]))
@@ -374,7 +369,7 @@ class OperationScreen(Screen):
         elif event.button.id[:7] == "btn-dl-":
             self.app.push_screen(FormularioModal(entities.TABELAS[event.button.id[7:]]))
 
-        
+   
 
 class ModesApp(App):
     CSS_PATH = "estilo.tcss" # Lembre-se de criar este arquivo!
