@@ -647,13 +647,13 @@ class FormularioPessoaComposto(ModalScreen):
 
 class InitialScreen(Screen):
     def compose(self) -> ComposeResult:
-        LOGO_HORTIFRUTI = r"""\
-        _   _               _   _  __               _     _ 
+        LOGO_HORTIFRUTI = r"""
+         _   _               _   _  __               _     _ 
         | | | | ___  _ __  _| |_(_)/ _| _ __  _   _ | |_  (_)
         | |_| |/ _ \| '__||_   _| | |_ | '__|| | | ||  _| | |
         |  _  | (_) | |     | | | |  _|| |   | |_| || |_  | |
         |_| |_|\___/|_|     |_| |_|_|  |_|    \__,_| \__| |_|
-                                                crud v26.6\
+                                                crud v26.6
         """
         yield Static(LOGO_HORTIFRUTI, classes="titulo-tela")
         yield Button("Operar", id="btn-operar", variant="primary")
@@ -704,7 +704,7 @@ class OperationScreen(Screen):
             with Vertical(id="menu-opcoes"):
                 yield Static("=== ESCOLHA UMA OPERAÇÃO ===")
                 yield Button("Cadastros", id="btn-cadastro")
-                yield Button("Iniciar Venda (PDV)", id="btn-vender")
+                yield Button("Iniciar Venda", id="btn-vender")
                 yield Button("Deletar", id="btn-deletar")
                 yield Button("Atualizar", id="btn-update")
 
@@ -741,7 +741,7 @@ class OperationScreen(Screen):
                 yield DataTable(id="produtos-lista")
 
             with Vertical(id="tela-fin"):
-                yield Static("=== Finalizando Pagamento ===")
+                yield Static("=== FINALIZAR PAGAMENTO ===")
                 yield Select([], prompt="Selecione o cliente", id="fin-cliente")
                 yield Select([("Dinheiro", "Dinheiro"), ("Débito", "Débito"), ("Crédito", "Crédito"), ("Pix", "Pix")], prompt="Selecione Forma de pagamento", id="fin-pagto")
                 yield Select([("Venda", "Venda"), ("Delivery", "Delivery")], prompt="Selecione O tipo do pedido", id="fin-tipo")
