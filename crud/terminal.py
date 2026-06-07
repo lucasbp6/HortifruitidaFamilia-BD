@@ -29,17 +29,31 @@ class View(ModalScreen):
         yield DataTable(id="minha-lista")
 
     def on_mount(self) -> None:
-        lista = self.query_one("#minha-lista", DataTable)
-        self.colunas = entities.TABELAS[self.tabela][0]
-        lista.add_columns(*self.colunas)
-        
-        opcoes_select = [(coluna, str(indice)) for indice, coluna in enumerate(self.colunas)]
-        select = self.query_one("#select-coluna", Select)
-        select.set_options(opcoes_select)
-        
-        self.dados_originais = operacoes.select(self.tabela)
-        if self.dados_originais:
-            lista.add_rows(self.dados_originais)
+            lista = self.query_one("#minha-lista", DataTable)
+            
+            # Interceptamos ENDERECO
+            if self.tabela == "ENDERECO":
+                self.colunas = list(entities.TABELAS[self.tabela][0]) + ["Tipo Vinculo", "Proprietário (Nome)"]
+                self.dados_originais = operacoes.select_enderecos_por_tipo("TODOS")
+                
+            # Interceptamos TELEFONE (Tabela Virtual)
+            elif self.tabela == "TELEFONE":
+                self.colunas = ["Telefone", "Tipo Vinculo", "Proprietário (Nome)"]
+                self.dados_originais = operacoes.select_telefones_geral()
+                
+            # Comportamento Padrão para as demais
+            else:
+                self.colunas = list(entities.TABELAS[self.tabela][0])
+                self.dados_originais = operacoes.select(self.tabela)
+                
+            lista.add_columns(*self.colunas)
+            
+            opcoes_select = [(coluna, str(indice)) for indice, coluna in enumerate(self.colunas)]
+            select = self.query_one("#select-coluna", Select)
+            select.set_options(opcoes_select)
+            
+            if self.dados_originais:
+                lista.add_rows(self.dados_originais)
 
     @on(Input.Changed, "#input-filtro")
     @on(Select.Changed, "#select-coluna")
@@ -633,7 +647,7 @@ class FormularioPessoaComposto(ModalScreen):
 
 class InitialScreen(Screen):
     def compose(self) -> ComposeResult:
-        LOGO_HORTIFRUTI = """\
+        LOGO_HORTIFRUTI = r"""\
         _   _               _   _  __               _     _ 
         | | | | ___  _ __  _| |_(_)/ _| _ __  _   _ | |_  (_)
         | |_| |/ _ \| '__||_   _| | |_ | '__|| | | ||  _| | |
@@ -659,6 +673,7 @@ class ViewScreen(Screen):
         yield Button("Fornecedores", id="btn-vw-FORNECEDOR")
         yield Button("Vendedores", id="btn-vw-VENDEDOR")
         yield Button("Endereço", id="btn-vw-ENDERECO")
+        yield Button("Telefones", id="btn-vw-TELEFONE")
         yield Button("Unidades", id="btn-vw-UNIDADEMEDIDA")
         yield Button("Produtos", id="btn-vw-PRODUTO")
         yield Button("Categorias", id="btn-vw-CATEGORIA")
@@ -901,10 +916,15 @@ class OperationScreen(Screen):
             try:
                 id_pedido, id_pag = operacoes.inserir_pedido(self.total_venda, tipo, id_cliente, self.ident)
                 
-                # TODO Limitar venda e descontar estoque
+                # Limitar venda e descontar estoque
                 for item in self.carrinho_itens:
-                    operacoes.insert(["ITEMPEDIDO"], [{"IDProd": item["id"], "IDPedido": id_pedido, "QtdItem": item["qtd"], "DescItem": 0, "PrecoUn": item["preco"]}])
-                
+                    try:
+                        operacoes.insert(["ITEMPEDIDO"], [{"IDProd": item["id"], "IDPedido": id_pedido, "QtdItem": item["qtd"], "DescItem": 0, "PrecoUn": item["preco"]}])
+                        operacoes.update("PRODUTO", {"QtdEstoque": f"QtdEstoque - {item['qtd']}"}, {"IDProd": item["id"]})
+                    except Exception as e:
+                        self.app.notify(f"Erro ao inserir item: {e}", severity="error")
+                        raise
+
                 agora = datetime.now() # Certifique-se de ter 'from datetime import datetime' no topo do arquivo
                 
                 operacoes.insert(["PAGAMENTO"], [{"IDPag": id_pag, "MetodoPag": forma_pgt, "ValorPag": self.total_venda, "DataPag": agora, "IDPedido": id_pedido}])
