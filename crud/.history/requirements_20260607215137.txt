@@ -1,4 +1,4 @@
-python-dotenv==1.2.1
+python-dotenv
 linkify-it-py==2.1.0
 markdown-it-py==4.2.0
 mdit-py-plugins==0.6.1

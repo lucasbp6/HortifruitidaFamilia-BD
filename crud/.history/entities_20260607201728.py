@@ -76,36 +76,3 @@ TABELAS = {
         ("str(15)", "int")
     )
 }
-
-def colunas(tabela: str):
-    return TABELAS[tabela][0]
-
-
-def tipos(tabela: str):
-    return TABELAS[tabela][1]
-
-
-def chave_primaria(tabela: str):
-    return TABELAS[tabela][0][0]
-
-
-def existe_tabela(tabela: str):
-    return tabela in TABELAS
-
-
-NOMES_AMIGAVEIS = {
-    "CATEGORIA": "Categorias",
-    "UNIDADEMEDIDA": "Unidades de medida",
-    "PRODUTO": "Produtos",
-    "FORNECEDOR": "Fornecedores",
-    "CLIENTE": "Clientes",
-    "VENDEDOR": "Vendedores",
-    "CAIXA": "Caixas",
-    "OPERACAOCAIXA": "Operações de caixa",
-    "PEDIDO": "Vendas/Pedidos",
-    "PAGAMENTO": "Pagamentos",
-    "ITEMPEDIDO": "Itens do pedido",
-    "PERDAESTOQUE": "Perdas de estoque",
-    "ENTRADAESTOQUE": "Entradas de estoque",
-    "ENDERECO": "Endereços",
-}
