@@ -1,3 +1,9 @@
+BEGIN;
+
+DROP SCHEMA IF EXISTS hortifruti CASCADE;
+CREATE SCHEMA hortifruti;
+SET search_path TO hortifruti;
+
 CREATE TABLE CATEGORIA
 (
   IDCat INT NOT NULL,
@@ -73,15 +79,22 @@ CREATE TABLE OPERACAOCAIXA
   IDOperacao INT NOT NULL,
   DataOpAber TIMESTAMP NOT NULL,
   ValorOpAber NUMERIC(10,2) NOT NULL,
-  DataOpFecham TIMESTAMP NOT NULL,
-  ValorOpFecham NUMERIC(10,2) NOT NULL,
-  SaldoOp NUMERIC(10,2) NOT NULL,
+  DataOpFecham TIMESTAMP NULL,
+  ValorOpFecham NUMERIC(10,2) NULL,
+  SaldoOp NUMERIC(10,2) NULL,
   IDVend INT NOT NULL,
   IDCaixa INT NOT NULL,
   PRIMARY KEY (IDOperacao),
 
   CHECK (ValorOpAber >= 0),
-  CHECK (ValorOpFecham >= 0)
+  CHECK (ValorOpFecham IS NULL OR ValorOpFecham >= 0),
+  CHECK (SaldoOp IS NULL OR SaldoOp >= 0),
+  CHECK (DataOpFecham IS NULL OR DataOpFecham >= DataOpAber),
+  CHECK (
+    (DataOpFecham IS NULL AND ValorOpFecham IS NULL AND SaldoOp IS NULL)
+    OR
+    (DataOpFecham IS NOT NULL AND ValorOpFecham IS NOT NULL AND SaldoOp IS NOT NULL)
+  )
 );
 
 CREATE TABLE PEDIDO
@@ -262,3 +275,113 @@ ADD FOREIGN KEY (IDCliente) REFERENCES CLIENTE(IDCliente);
 
 ALTER TABLE PRODUTO
 ADD FOREIGN KEY (IDUnidade) REFERENCES UNIDADEMEDIDA(IDUnidade);
+
+-- ============================================================
+-- ÍNDICES PARA OTIMIZAÇÃO DAS CONSULTAS
+-- ============================================================
+-- Observação: PRIMARY KEY e UNIQUE já criam índices automaticamente.
+-- Portanto, os índices abaixo focam principalmente em chaves estrangeiras
+-- que aparecem em JOIN, WHERE, UPDATE e DELETE.
+
+-- Categoria hierárquica
+CREATE INDEX IF NOT EXISTS idx_categoria_idcatpai
+ON CATEGORIA (IDCatPai);
+
+-- Produto
+CREATE INDEX IF NOT EXISTS idx_produto_idcat
+ON PRODUTO (IDCat);
+
+CREATE INDEX IF NOT EXISTS idx_produto_idunidade
+ON PRODUTO (IDUnidade);
+
+-- Operação de caixa
+CREATE INDEX IF NOT EXISTS idx_operacaocaixa_idvend
+ON OPERACAOCAIXA (IDVend);
+
+CREATE INDEX IF NOT EXISTS idx_operacaocaixa_idcaixa
+ON OPERACAOCAIXA (IDCaixa);
+
+-- Pedido
+CREATE INDEX IF NOT EXISTS idx_pedido_idcliente
+ON PEDIDO (IDCliente);
+
+CREATE INDEX IF NOT EXISTS idx_pedido_idoperacao
+ON PEDIDO (IDOperacao);
+
+-- Pagamento
+CREATE INDEX IF NOT EXISTS idx_pagamento_idpedido
+ON PAGAMENTO (IDPedido);
+
+-- Item do pedido
+-- A PK (IDProd, IDPedido) já ajuda buscas iniciadas por IDProd.
+-- Este índice acelera buscas por pedido.
+CREATE INDEX IF NOT EXISTS idx_itempedido_idpedido
+ON ITEMPEDIDO (IDPedido);
+
+-- Movimentações de estoque
+CREATE INDEX IF NOT EXISTS idx_perdaestoque_idprod
+ON PERDAESTOQUE (IDProd);
+
+CREATE INDEX IF NOT EXISTS idx_entradaestoque_idforn
+ON ENTRADAESTOQUE (IDForn);
+
+CREATE INDEX IF NOT EXISTS idx_entradaestoque_idprod
+ON ENTRADAESTOQUE (IDProd);
+
+-- Endereços vinculados
+-- As PKs compostas já indexam a primeira coluna; estes índices ajudam
+-- consultas/deleções iniciadas por IDEndereco.
+CREATE INDEX IF NOT EXISTS idx_enderecocliente_idendereco
+ON ENDERECOCLIENTE (IDEndereco);
+
+CREATE INDEX IF NOT EXISTS idx_enderecovendedor_idendereco
+ON ENDERECOVENDEDOR (IDEndereco);
+
+CREATE INDEX IF NOT EXISTS idx_enderecofornec_idendereco
+ON ENDERECOFORNEC (IDEndereco);
+
+-- Telefones vinculados
+-- As PKs compostas começam pelo telefone; estes índices ajudam buscas por pessoa.
+CREATE INDEX IF NOT EXISTS idx_fornecedor_celforn_idforn
+ON FORNECEDOR_CELFORN (IDForn);
+
+CREATE INDEX IF NOT EXISTS idx_cliente_celcliente_idcliente
+ON CLIENTE_CELCLIENTE (IDCliente);
+
+
+-- ============================================================
+-- ÍNDICES PARA RELATÓRIOS E FILTROS POR DATA
+-- ============================================================
+-- Estes índices são úteis para telas/relatórios que filtram vendas,
+-- pagamentos, entradas, perdas e operações de caixa por período.
+
+CREATE INDEX IF NOT EXISTS idx_pedido_datapedido
+ON PEDIDO (DataPedido);
+
+CREATE INDEX IF NOT EXISTS idx_pagamento_datapag
+ON PAGAMENTO (DataPag);
+
+CREATE INDEX IF NOT EXISTS idx_entradaestoque_entradadata
+ON ENTRADAESTOQUE (EntradaData);
+
+CREATE INDEX IF NOT EXISTS idx_perdaestoque_dataperda
+ON PERDAESTOQUE (DataPerda);
+
+CREATE INDEX IF NOT EXISTS idx_operacaocaixa_dataopaber
+ON OPERACAOCAIXA (DataOpAber);
+
+CREATE INDEX IF NOT EXISTS idx_operacaocaixa_dataopfecham
+ON OPERACAOCAIXA (DataOpFecham);
+
+-- Índices compostos úteis para relatórios comuns:
+-- pedidos de um cliente por período e movimentações de um produto por período.
+CREATE INDEX IF NOT EXISTS idx_pedido_idcliente_datapedido
+ON PEDIDO (IDCliente, DataPedido);
+
+CREATE INDEX IF NOT EXISTS idx_entradaestoque_idprod_entradadata
+ON ENTRADAESTOQUE (IDProd, EntradaData);
+
+CREATE INDEX IF NOT EXISTS idx_perdaestoque_idprod_dataperda
+ON PERDAESTOQUE (IDProd, DataPerda);
+
+COMMIT;
