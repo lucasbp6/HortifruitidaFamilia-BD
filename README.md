@@ -61,6 +61,11 @@ HortifruitidaFamilia-BD/
     ├── conexao.py
     ├── entities.py
     ├── operacoes.py
+    ├── operacoes_crud.py
+    ├── operacoes_estoque.py
+    ├── operacoes_venda.py
+    ├── operacoes_consultas.py
+    ├── operacoes_pessoa.py
     ├── requirements.txt
     ├── estilo.tcss
     │
@@ -70,25 +75,13 @@ HortifruitidaFamilia-BD/
     │   ├── view_screen.py
     │   └── operation_screen.py
     │
-    ├── modals/
-    │   ├── __init__.py
-    │   ├── view_modal.py
-    │   ├── delete_modal.py
-    │   ├── update_select_modal.py
-    │   ├── formulario_modal.py
-    │   └── formulario_pessoa_composto.py
-    │
-    ├── services/
-    │   ├── __init__.py
-    │   ├── venda_service.py
-    │   ├── cadastro_service.py
-    │   └── formatadores.py
-    │
-    └── utils/
+    └── modals/
         ├── __init__.py
-        ├── filtros.py
-        ├── validadores.py
-        └── tabela_utils.py
+        ├── view_modal.py
+        ├── delete_modal.py
+        ├── update_select_modal.py
+        ├── formulario_modal.py
+        └── formulario_pessoa_composto.py
 ```
 
 ## Organização das pastas
@@ -99,6 +92,7 @@ A raiz contém os arquivos gerais de documentação e representação do projeto
 
 - `README.md`: documentação principal do projeto;
 - `modelo_logico.png`: imagem do modelo lógico do banco de dados;
+- `index/`: documentação relacionada aos índices de otimização;
 - `sql/`: scripts de criação e povoamento do banco;
 - `crud/`: aplicação em Python para interação com o banco.
 
@@ -136,21 +130,29 @@ crud/
 ├── conexao.py
 ├── entities.py
 ├── operacoes.py
+├── operacoes_crud.py
+├── operacoes_estoque.py
+├── operacoes_venda.py
+├── operacoes_consultas.py
+├── operacoes_pessoa.py
 ├── requirements.txt
 ├── estilo.tcss
 ├── screens/
-├── modals/
-├── services/
-└── utils/
+└── modals/
 ```
 
 Os principais arquivos são:
 
-- `app.py`: ponto de entrada principal da aplicação;
-- `terminal.py`: versão anterior ou alternativa da aplicação em terminal;
-- `conexao.py`: responsável pela conexão com o banco PostgreSQL;
-- `entities.py`: mapeamento das tabelas, colunas e tipos esperados;
-- `operacoes.py`: funções gerais de banco, como inserção, seleção, atualização e deleção;
+- `terminal.py`: ponto de entrada da aplicação em terminal;
+- `app.py`: definição da aplicação Textual, modos principais, atalhos e tela inicial;
+- `conexao.py`: responsável pela conexão com o banco PostgreSQL, usando variáveis de ambiente ou arquivo `.env`;
+- `entities.py`: mapeamento das tabelas, colunas, tipos esperados e funções auxiliares;
+- `operacoes.py`: módulo agregador que reexporta as operações dos módulos especializados;
+- `operacoes_crud.py`: operações genéricas de banco, como inserção, seleção, atualização e deleção;
+- `operacoes_estoque.py`: regras de entrada, perda e baixa de estoque;
+- `operacoes_venda.py`: regras de abertura de caixa e finalização transacional de vendas;
+- `operacoes_consultas.py`: consultas especiais para endereços e telefones;
+- `operacoes_pessoa.py`: regras de deleção segura de pessoas;
 - `requirements.txt`: dependências Python necessárias para executar a aplicação;
 - `estilo.tcss`: arquivo de estilo da interface construída com Textual.
 
@@ -164,7 +166,7 @@ Contém as telas principais da aplicação:
 
 - `initial_screen.py`: tela inicial;
 - `view_screen.py`: tela de visualização de dados;
-- `operation_screen.py`: tela principal de operações.
+- `operation_screen.py`: tela principal de operações, incluindo cadastro, venda, atualização e deleção.
 
 ### `modals/`
 
@@ -176,21 +178,16 @@ Contém janelas auxiliares usadas durante as operações:
 - `formulario_modal.py`: formulário genérico de inserção e atualização;
 - `formulario_pessoa_composto.py`: formulário para cadastro completo de cliente, fornecedor ou vendedor.
 
-### `services/`
+### Módulos `operacoes_*.py`
 
-Contém regras de negócio separadas da interface:
+A camada de operações com o banco foi separada em módulos menores:
 
-- `venda_service.py`: lógica relacionada a vendas, carrinho, pedidos, pagamentos e baixa de estoque;
-- `cadastro_service.py`: lógica relacionada a cadastros compostos;
-- `formatadores.py`: funções auxiliares de formatação.
-
-### `utils/`
-
-Contém funções utilitárias reaproveitáveis:
-
-- `filtros.py`: funções para filtro de dados;
-- `validadores.py`: validações de entradas;
-- `tabela_utils.py`: funções auxiliares para manipulação de tabelas na interface.
+- `operacoes_crud.py`: concentra as operações genéricas `insert`, `select`, `update` e `delete`;
+- `operacoes_estoque.py`: registra entradas e perdas de estoque, atualizando o estoque dos produtos;
+- `operacoes_venda.py`: abre operações de caixa e finaliza vendas em uma única transação;
+- `operacoes_consultas.py`: executa consultas específicas com `JOIN` e `UNION ALL`, como endereços e telefones;
+- `operacoes_pessoa.py`: contém regras específicas para deleção segura de clientes, vendedores e fornecedores;
+- `operacoes.py`: mantém uma interface única para importação das funções no restante da aplicação.
 
 ## Principais entidades do banco
 
@@ -223,7 +220,7 @@ Essas tabelas permitem representar o funcionamento do hortifruti desde o cadastr
 A aplicação permite realizar operações como:
 
 - visualizar dados das tabelas;
-- filtrar registros exibidos;
+- filtrar registros exibidos na interface;
 - cadastrar produtos, categorias, unidades, clientes, fornecedores, vendedores, caixas e endereços;
 - registrar entradas de estoque;
 - registrar perdas de estoque;
@@ -233,7 +230,10 @@ A aplicação permite realizar operações como:
 - montar carrinho de venda;
 - finalizar pedido;
 - registrar pagamento;
+- baixar estoque automaticamente durante a venda;
 - fechar operação de caixa.
+
+Os filtros da interface são feitos após o carregamento dos dados da tabela: o usuário escolhe a coluna por meio de um `Select` e digita o termo de busca em um campo de texto.
 
 ## Tecnologias utilizadas
 
@@ -243,6 +243,7 @@ A aplicação permite realizar operações como:
 - Textual
 - Rich
 - Neon PostgreSQL
+- Python Dotenv
 
 ## Como executar o projeto
 
@@ -293,17 +294,9 @@ pip install -r requirements.txt
 
 O arquivo `crud/conexao.py` é responsável por abrir a conexão com o PostgreSQL.
 
-Para executar o projeto, é necessário configurar corretamente os dados de conexão:
+Para executar o projeto, é necessário configurar corretamente os dados de conexão por variáveis de ambiente ou por um arquivo `.env` dentro da pasta `crud/`.
 
-- host;
-- database;
-- user;
-- password;
-- sslmode.
-
-Por segurança, recomenda-se não versionar senhas diretamente no código. Uma alternativa melhor é usar variáveis de ambiente ou um arquivo `.env` ignorado pelo Git.
-
-Exemplo conceitual de variáveis necessárias:
+Exemplo de arquivo `crud/.env`:
 
 ```text
 PGHOST=<host-do-banco>
@@ -312,6 +305,8 @@ PGUSER=<usuario>
 PGPASSWORD=<senha>
 PGSSLMODE=require
 ```
+
+Por segurança, o arquivo `.env` não deve ser versionado no GitHub.
 
 ### 5. Criar as tabelas do banco
 
@@ -345,14 +340,10 @@ psql -d <nome-do-banco> -f sql/seeds/02_unidades.sql
 Dentro da pasta `crud/`, execute:
 
 ```bash
-python app.py
-```
-
-Caso esteja usando a versão alternativa em terminal:
-
-```bash
 python terminal.py
 ```
+
+O arquivo `terminal.py` inicializa a aplicação definida em `app.py`.
 
 ## Observações sobre segurança
 
@@ -361,7 +352,7 @@ O projeto utiliza conexão com banco PostgreSQL. Por isso, é importante evitar 
 Recomenda-se:
 
 - não publicar senhas no GitHub;
-- usar variáveis de ambiente;
+- usar variáveis de ambiente ou arquivo `.env`;
 - adicionar arquivos sensíveis ao `.gitignore`;
 - trocar senhas caso alguma credencial tenha sido versionada por engano.
 
@@ -377,18 +368,27 @@ Entre as restrições implementadas, destacam-se:
 - documentos únicos para clientes, fornecedores e vendedores;
 - relacionamentos entre produtos, categorias, pedidos, pagamentos, caixas, vendedores e clientes.
 
-## Possíveis melhorias futuras
+Além das restrições do banco, a aplicação também realiza algumas validações antes das operações, como:
+
+- validação de campos obrigatórios nos formulários;
+- validação de tipos numéricos;
+- validação de estoque suficiente antes de finalizar vendas;
+- validação de dados básicos em cadastros compostos de clientes, fornecedores e vendedores.
+
+## Implementações futuras
 
 Algumas melhorias possíveis para versões futuras são:
 
-- uso completo de variáveis de ambiente para conexão;
-- tratamento mais amplo de erros na interface;
-- validação mais rigorosa de CPF, CNPJ, CEP e datas;
-- geração automática de IDs;
 - criação de testes automatizados;
-- melhoria da baixa de estoque no fluxo de venda;
-- documentação separada para consultas e índices de otimização;
-- padronização completa dos nomes de arquivos e módulos.
+- geração automática de IDs por `SERIAL`, `IDENTITY` ou sequences;
+- validação mais rigorosa de datas;
+- validação completa de CPF e CNPJ com dígitos verificadores;
+- melhoria visual da interface;
+- criação de uma pasta `services/` para separar regras de negócio adicionais, caso o projeto cresça;
+- criação de uma pasta `utils/` para centralizar filtros, validadores e formatadores reutilizáveis;
+- transformação dos arquivos `operacoes_*.py` em um pacote próprio;
+- documentação mais detalhada das consultas e dos índices de otimização;
+- revisão completa das credenciais do banco, incluindo troca de senhas que tenham sido expostas durante o desenvolvimento.
 
 ## Status do projeto
 
